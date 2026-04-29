@@ -1,13 +1,86 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+
+    <!-- Warm up the connection to TVMaze API + image CDN so DNS+TLS happen
+         in parallel with the JS bundle download. -->
+    <link rel="preconnect" href="https://api.tvmaze.com">
+    <link rel="preconnect" href="https://static.tvmaze.com">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Work+Sans:wght@400;500;600;700&display=swap">
+
+    <title>Tele Iva</title>
+
+    <style>
+      /* Inline bootstrap screen — visible the moment HTML is parsed,
+         before any JS runs. Replaced by Vue when the app mounts. */
+      .app-bootstrap {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        background: #F4ECD8;
+        color: #2B2118;
+        font-family: 'Abril Fatface', Georgia, serif;
+        padding: 1rem;
+        text-align: center;
+      }
+      [data-theme="dark"] .app-bootstrap {
+        background: #1A1410;
+        color: #F4ECD8;
+      }
+      .app-bootstrap-brand {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        line-height: 1.1;
+      }
+      .app-bootstrap-hint {
+        font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #6B5D4F;
+        animation: app-bootstrap-pulse 1.6s ease-in-out infinite;
+      }
+      [data-theme="dark"] .app-bootstrap-hint {
+        color: #B8A88E;
+      }
+      @keyframes app-bootstrap-pulse {
+        0%, 100% { opacity: 0.65; }
+        50% { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .app-bootstrap-hint { animation: none; }
+      }
+    </style>
+
+    <script>
+      // Apply theme before paint to avoid a flash. Keep key in sync with src/stores/theme.ts.
+      (function () {
+        try {
+          var stored = localStorage.getItem('tele-iva-theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="app-bootstrap">
+        <span class="app-bootstrap-brand">Tele Iva</span>
+        <span class="app-bootstrap-hint">Cueing up tonight's listings…</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

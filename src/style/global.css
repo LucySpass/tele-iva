@@ -33,13 +33,20 @@ body {
   line-height: var(--line-height-normal);
   color: var(--color-text);
   background-color: var(--color-bg);
+  background-repeat: repeat;
   transition: background-color var(--duration-base) var(--easing-standard),
               color var(--duration-base) var(--easing-standard);
 
-  /* Paper texture overlay using inline SVG noise.
-     Low opacity keeps it subtle, just enough to feel printed. */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17 0 0 0 0 0.13 0 0 0 0 0.09 0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-repeat: repeat;
+  /* Old-film grain. Inline SVG noise (the only way to get real random noise
+     via CSS) — fine baseFrequency for film-like specks rather than coarse
+     paper texture. Dark specks on cream in light mode. */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='1' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17 0 0 0 0 0.13 0 0 0 0 0.09 0 0 0 0.15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+}
+
+/* Cream specks on dark in dark mode — otherwise dark specks on dark bg
+   render invisible. */
+[data-theme="dark"] body {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.85 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
 }
 
 img,
