@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SearchField from '../components/common/SearchField.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import GenreSection from '../components/layout/GenreSection.vue'
 import { useGenres } from '../composables/useGenres'
@@ -10,6 +11,16 @@ const genres = useGenres(data, { limitPerGenre: 12 })
 
 <template>
   <AppLayout>
+    <section class="hero" aria-labelledby="hero-heading">
+      <p class="eyebrow">Tonight on the dial</p>
+      <h1 id="hero-heading" class="hero-title">What are you in the mood for?</h1>
+      <p class="hero-sub">
+        Browse the listings by genre below — or start typing a title and we'll
+        take you to the search desk.
+      </p>
+      <SearchField variant="hero" placeholder="Search by title…" label="Find a show" />
+    </section>
+
     <p v-if="isPending" class="state" role="status">
       Cueing up tonight's listings…
     </p>
@@ -36,6 +47,30 @@ const genres = useGenres(data, { limitPerGenre: 12 })
 </template>
 
 <style scoped>
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border);
+  margin-bottom: var(--space-8);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-tight);
+  margin: 0;
+  max-width: 24ch;
+}
+
+.hero-sub {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  max-width: 48ch;
+  margin: 0 0 var(--space-3);
+}
+
 .state {
   font-family: var(--font-display);
   font-size: var(--font-size-xl);
@@ -63,5 +98,11 @@ const genres = useGenres(data, { limitPerGenre: 12 })
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: var(--font-size-2xl);
+  }
 }
 </style>

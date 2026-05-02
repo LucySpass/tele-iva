@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { useSearchNavigation } from '../../composables/useSearchNavigation'
 import AppFooter from './AppFooter.vue'
 import AppHeader from './AppHeader.vue'
+
+// Single mount point for URL ↔ search-store wiring. Must live above
+// <RouterView /> so it stays alive across route changes.
+useSearchNavigation()
 </script>
 
 <template>

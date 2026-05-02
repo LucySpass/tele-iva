@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { NTag } from 'naive-ui'
+import { NTable, NTag } from 'naive-ui'
 import { computed } from 'vue'
 
+import BackLink from '../components/common/BackLink.vue'
 import CoverImage from '../components/common/CoverImage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import { useShow } from '../composables/useShow'
@@ -50,6 +51,25 @@ const skeletonVariant = computed(() => {
   const id = show.value?.id ?? Number(props.id) ?? 0
   return skeletonVariants[id % 3]
 })
+
+interface Fact {
+  label: string
+  value: string
+  href?: string
+}
+
+const facts = computed<Fact[]>(() => {
+  const list: Fact[] = []
+  const data = show.value
+  if (!data) return list
+  if (network.value) list.push({ label: 'Network', value: network.value })
+  if (data.runtime) list.push({ label: 'Runtime', value: `${data.runtime} min` })
+  if (scheduleText.value) list.push({ label: 'Schedule', value: scheduleText.value })
+  if (data.premiered) list.push({ label: 'Premiered', value: data.premiered })
+  if (data.ended) list.push({ label: 'Ended', value: data.ended })
+  if (data.officialSite) list.push({ label: 'Official site', value: 'Visit', href: data.officialSite })
+  return list
+})
 </script>
 
 <template>
@@ -63,13 +83,10 @@ const skeletonVariant = computed(() => {
     </div>
 
     <article v-else-if="show" class="show-detail">
-      <header class="hero">
+      <BackLink />
+      <div class="hero">
         <div class="cover">
-          <CoverImage
-            :src="show.image?.original ?? null"
-            :alt="`${show.name} cover art`"
-            :variant="skeletonVariant"
-          />
+          <CoverImage :src="show.image?.original ?? null" :alt="`${show.name} cover art`" :variant="skeletonVariant" />
         </div>
 
         <div class="masthead">
@@ -97,7 +114,7 @@ const skeletonVariant = computed(() => {
             </li>
           </ul>
         </div>
-      </header>
+      </div>
 
       <section v-if="show.summary" class="summary" aria-labelledby="summary-heading">
         <h2 id="summary-heading" class="section-title">Synopsis</h2>
@@ -105,36 +122,19 @@ const skeletonVariant = computed(() => {
         <div class="summary-body" v-html="show.summary"></div>
       </section>
 
-      <section class="facts" aria-labelledby="facts-heading">
+      <section v-if="facts.length" class="facts" aria-labelledby="facts-heading">
         <h2 id="facts-heading" class="section-title">On the dial</h2>
-        <dl class="facts-list">
-          <template v-if="network">
-            <dt>Network</dt>
-            <dd>{{ network }}</dd>
-          </template>
-          <template v-if="show.runtime">
-            <dt>Runtime</dt>
-            <dd>{{ show.runtime }} min</dd>
-          </template>
-          <template v-if="scheduleText">
-            <dt>Schedule</dt>
-            <dd>{{ scheduleText }}</dd>
-          </template>
-          <template v-if="show.premiered">
-            <dt>Premiered</dt>
-            <dd>{{ show.premiered }}</dd>
-          </template>
-          <template v-if="show.ended">
-            <dt>Ended</dt>
-            <dd>{{ show.ended }}</dd>
-          </template>
-          <template v-if="show.officialSite">
-            <dt>Official site</dt>
-            <dd>
-              <a :href="show.officialSite" target="_blank" rel="noopener noreferrer">Visit</a>
-            </dd>
-          </template>
-        </dl>
+        <NTable :bordered="false" size="small" class="facts-table">
+          <tbody>
+            <tr v-for="fact in facts" :key="fact.label">
+              <th scope="row" class="facts-key">{{ fact.label }}</th>
+              <td class="facts-value">
+                <a v-if="fact.href" :href="fact.href" target="_blank" rel="noopener noreferrer">{{ fact.value }}</a>
+                <template v-else>{{ fact.value }}</template>
+              </td>
+            </tr>
+          </tbody>
+        </NTable>
       </section>
     </article>
   </AppLayout>
@@ -181,7 +181,7 @@ const skeletonVariant = computed(() => {
 .show-detail {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-6);
 }
 
 .hero {
@@ -300,42 +300,31 @@ const skeletonVariant = computed(() => {
   margin-bottom: 0;
 }
 
-.facts-list {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: var(--space-3) var(--space-6);
-  margin: 0;
+.facts-table {
+  max-width: 36rem;
 }
 
-.facts-list dt {
+.facts-key {
+  width: 12rem;
   font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wider);
   color: var(--color-text-muted);
-  align-self: baseline;
+  text-align: start;
+  vertical-align: baseline;
 }
 
-.facts-list dd {
-  margin: 0;
+.facts-value {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   color: var(--color-text);
 }
 
 @media (max-width: 480px) {
-  .facts-list {
-    grid-template-columns: 1fr;
-    gap: var(--space-1) 0;
-  }
-
-  .facts-list dt {
-    margin-top: var(--space-3);
-  }
-
-  .facts-list dt:first-child {
-    margin-top: 0;
+  .facts-key {
+    width: auto;
   }
 }
 </style>
