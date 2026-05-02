@@ -93,7 +93,6 @@ watch(
 }
 
 .skeleton-label {
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
@@ -124,7 +123,6 @@ watch(
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;

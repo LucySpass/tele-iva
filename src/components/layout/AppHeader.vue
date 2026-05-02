@@ -81,7 +81,6 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
 }
 
 .nav-link {
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wide);

@@ -58,7 +58,6 @@ const socialLinks = [
   gap: var(--space-4);
   padding: var(--space-6);
   border-top: var(--border-width) solid var(--color-border);
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }

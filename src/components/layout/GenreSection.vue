@@ -48,9 +48,7 @@ const headingId = computed(() => `genre-${props.genre.toLowerCase().replace(/\s+
   gap: var(--space-3);
   margin: 0;
   padding: var(--space-2) var(--space-4);
-  font-family: var(--font-display);
   font-size: var(--font-size-xl);
-  line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
 }
 

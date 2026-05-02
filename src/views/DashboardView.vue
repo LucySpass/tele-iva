@@ -51,20 +51,15 @@ const genres = useGenres(data, { limitPerGenre: 12 })
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  border-bottom: var(--border-width) solid var(--color-border);
   margin-bottom: var(--space-8);
 }
 
 .hero-title {
-  font-family: var(--font-display);
   font-size: var(--font-size-3xl);
-  line-height: var(--line-height-tight);
   margin: 0;
-  max-width: 24ch;
 }
 
 .hero-sub {
-  font-family: var(--font-body);
   font-size: var(--font-size-base);
   color: var(--color-text-muted);
   max-width: 48ch;
@@ -81,13 +76,11 @@ const genres = useGenres(data, { limitPerGenre: 12 })
 }
 
 .state-headline {
-  font-family: var(--font-display);
   font-size: var(--font-size-xl);
   margin: 0 0 var(--space-4);
 }
 
 .state-action {
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wide);

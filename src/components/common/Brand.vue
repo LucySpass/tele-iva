@@ -29,7 +29,6 @@
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-1);
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wider);
@@ -44,6 +43,8 @@
 }
 
 @media (min-width: 768px) {
-  .wordmark { font-size: var(--font-size-3xl); }
+  .wordmark {
+    font-size: var(--font-size-3xl);
+  }
 }
 </style>

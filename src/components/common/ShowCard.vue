@@ -108,9 +108,7 @@ const skeletonVariant = computed(() => skeletonVariants[props.show.id % 3])
 }
 
 .title {
-  font-family: var(--font-display);
   font-size: var(--font-size-lg);
-  line-height: var(--line-height-tight);
   margin: 0;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -124,7 +122,6 @@ const skeletonVariant = computed(() => skeletonVariants[props.show.id % 3])
   align-items: center;
   gap: var(--space-2);
   margin: 0;
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;

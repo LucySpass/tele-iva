@@ -90,21 +90,17 @@ const resultCountLabel = computed(() => {
 }
 
 .search-title {
-  font-family: var(--font-display);
   font-size: var(--font-size-2xl);
-  line-height: var(--line-height-tight);
   margin: 0;
 }
 
 .search-sub {
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
 
 .result-count {
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
@@ -126,13 +122,11 @@ const resultCountLabel = computed(() => {
 }
 
 .state-headline {
-  font-family: var(--font-display);
   font-size: var(--font-size-xl);
   margin: 0 0 var(--space-4);
 }
 
 .state-action {
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wide);

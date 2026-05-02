@@ -34,8 +34,9 @@ body {
   color: var(--color-text);
   background-color: var(--color-bg);
   background-repeat: repeat;
-  transition: background-color var(--duration-base) var(--easing-standard),
-              color var(--duration-base) var(--easing-standard);
+  transition:
+    background-color var(--duration-base) var(--easing-standard),
+    color var(--duration-base) var(--easing-standard);
 
   /* Old-film grain. Inline SVG noise (the only way to get real random noise
      via CSS) — fine baseFrequency for film-like specks rather than coarse
@@ -101,7 +102,9 @@ ol {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: 400;
   line-height: var(--line-height-tight);

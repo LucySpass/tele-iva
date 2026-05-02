@@ -116,7 +116,7 @@ const facts = computed<Fact[]>(() => {
         </div>
       </div>
 
-      <section v-if="show.summary" class="summary" aria-labelledby="summary-heading">
+      <section v-if="show.summary" class="max-width" aria-labelledby="summary-heading">
         <h2 id="summary-heading" class="section-title">Synopsis</h2>
         <!-- TVMaze returns sanitized HTML for summaries; safe to render. -->
         <div class="summary-body" v-html="show.summary"></div>
@@ -124,10 +124,10 @@ const facts = computed<Fact[]>(() => {
 
       <section v-if="facts.length" class="facts" aria-labelledby="facts-heading">
         <h2 id="facts-heading" class="section-title">On the dial</h2>
-        <NTable :bordered="false" size="small" class="facts-table">
+        <NTable :bordered="false" :bottom-bordered="false" size="small" class="max-width">
           <tbody>
             <tr v-for="fact in facts" :key="fact.label">
-              <th scope="row" class="facts-key">{{ fact.label }}</th>
+              <td scope="row" class="facts-key">{{ fact.label }}</td>
               <td class="facts-value">
                 <a v-if="fact.href" :href="fact.href" target="_blank" rel="noopener noreferrer">{{ fact.value }}</a>
                 <template v-else>{{ fact.value }}</template>
@@ -151,21 +151,18 @@ const facts = computed<Fact[]>(() => {
 }
 
 .state-headline {
-  font-family: var(--font-display);
   font-size: var(--font-size-xl);
   margin: 0 0 var(--space-2);
   color: var(--color-text);
 }
 
 .state-sub {
-  font-family: var(--font-body);
   font-size: var(--font-size-base);
   margin: 0 0 var(--space-6);
   color: var(--color-text-muted);
 }
 
 .state-action {
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wide);
@@ -215,7 +212,6 @@ const facts = computed<Fact[]>(() => {
   align-items: center;
   gap: var(--space-2);
   margin: 0;
-  font-family: var(--font-body);
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
@@ -224,9 +220,7 @@ const facts = computed<Fact[]>(() => {
 }
 
 .title {
-  font-family: var(--font-display);
   font-size: var(--font-size-2xl);
-  line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
   margin: 0;
 }
@@ -243,7 +237,6 @@ const facts = computed<Fact[]>(() => {
   flex-wrap: wrap;
   gap: var(--space-2);
   margin: 0;
-  font-family: var(--font-body);
   font-size: var(--font-size-sm);
   font-weight: 600;
   text-transform: uppercase;
@@ -272,21 +265,18 @@ const facts = computed<Fact[]>(() => {
 }
 
 .section-title {
-  font-family: var(--font-display);
   font-size: var(--font-size-xl);
-  line-height: var(--line-height-tight);
   margin: 0 0 var(--space-4);
   display: inline-block;
   border-bottom: var(--border-width-bold) solid var(--color-primary);
   padding-bottom: var(--space-1);
 }
 
-.summary {
-  max-width: 65ch;
+.max-width {
+  max-width: calc(var(--max-width-content) / 2);
 }
 
 .summary-body {
-  font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--color-text);
@@ -300,24 +290,15 @@ const facts = computed<Fact[]>(() => {
   margin-bottom: 0;
 }
 
-.facts-table {
-  max-width: 36rem;
-}
-
 .facts-key {
   width: 12rem;
-  font-family: var(--font-body);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
   color: var(--color-text-muted);
-  text-align: start;
-  vertical-align: baseline;
+  background-color: transparent;
 }
 
 .facts-value {
-  font-family: var(--font-body);
   font-size: var(--font-size-base);
   color: var(--color-text);
 }
