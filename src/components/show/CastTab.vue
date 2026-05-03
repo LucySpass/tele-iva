@@ -226,7 +226,7 @@ const hasOverflow = computed(
 }
 
 .footnote {
-  margin: var(--space-1) 0 0;
+  margin: 0;
   font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;

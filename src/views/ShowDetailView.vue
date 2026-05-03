@@ -155,14 +155,8 @@ const facts = computed<Fact[]>(() => {
 
       <section class="tabs-section" aria-label="Cast and episodes">
         <div role="tablist" :class="['tab-list', `tab-list--${activeTab}`]">
-          <button
-            v-for="tab in VALID_TABS"
-            :key="tab"
-            role="tab"
-            :aria-selected="activeTab === tab"
-            :class="['tab-trigger', { active: activeTab === tab }]"
-            @click="activeTab = tab"
-          >
+          <button v-for="tab in VALID_TABS" :key="tab" role="tab" :aria-selected="activeTab === tab"
+            :class="['tab-trigger', { active: activeTab === tab }]" @click="activeTab = tab">
             {{ TAB_LABELS[tab] }}
           </button>
         </div>

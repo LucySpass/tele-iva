@@ -37,6 +37,10 @@ defineEmits<{
 
 <style scoped>
 .state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
   text-align: center;
   padding-block: var(--space-12);
 }
@@ -58,6 +62,6 @@ defineEmits<{
 .state-sub {
   font-size: var(--font-size-base);
   color: var(--color-text-muted);
-  margin: var(--space-2) 0 0;
+  margin: 0;
 }
 </style>

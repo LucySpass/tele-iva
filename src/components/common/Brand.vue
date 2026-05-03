@@ -14,6 +14,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  gap: var(--space-1);
   line-height: var(--line-height-tight);
   color: var(--color-text);
 }
@@ -28,7 +29,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-1);
   font-size: var(--font-size-xs);
   font-weight: 600;
   letter-spacing: var(--letter-spacing-wider);

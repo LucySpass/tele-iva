@@ -6,7 +6,7 @@ import { fetchPerson, fetchPersonCredits } from '../api/tvmaze'
 const ONE_HOUR = 1000 * 60 * 60
 
 function isValidId(value: number | string) {
-  return value !== '' && value !== null && value !== undefined && !Number.isNaN(Number(value))
+  return value !== '' && value !== null && value !== undefined
 }
 
 /**
@@ -17,7 +17,11 @@ function isValidId(value: number | string) {
 export function usePerson(id: MaybeRefOrGetter<number | string>) {
   return useQuery({
     queryKey: computed(() => ['person', toValue(id)]),
-    queryFn: ({ signal }) => fetchPerson(Number(toValue(id)), signal),
+    queryFn: ({ signal }) => {
+      const numId = Number(toValue(id))
+      if (Number.isNaN(numId)) throw new Error('Invalid person ID')
+      return fetchPerson(numId, signal)
+    },
     staleTime: ONE_HOUR,
     enabled: computed(() => isValidId(toValue(id))),
   })
@@ -30,7 +34,11 @@ export function usePerson(id: MaybeRefOrGetter<number | string>) {
 export function usePersonCredits(id: MaybeRefOrGetter<number | string>) {
   return useQuery({
     queryKey: computed(() => ['person-credits', toValue(id)]),
-    queryFn: ({ signal }) => fetchPersonCredits(Number(toValue(id)), signal),
+    queryFn: ({ signal }) => {
+      const numId = Number(toValue(id))
+      if (Number.isNaN(numId)) throw new Error('Invalid person ID')
+      return fetchPersonCredits(numId, signal)
+    },
     staleTime: ONE_HOUR,
     enabled: computed(() => isValidId(toValue(id))),
   })
