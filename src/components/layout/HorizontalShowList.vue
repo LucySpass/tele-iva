@@ -15,7 +15,10 @@ function handleKey(event: KeyboardEvent) {
   const item = target?.closest('.item')
   if (!item) return
 
-  const sibling = event.key === 'ArrowRight' ? item.nextElementSibling : item.previousElementSibling
+  const sibling =
+    event.key === 'ArrowRight'
+      ? item.nextElementSibling
+      : item.previousElementSibling
   const link = sibling?.querySelector<HTMLElement>('a')
   if (!link) return
 

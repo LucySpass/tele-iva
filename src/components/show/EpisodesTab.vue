@@ -13,7 +13,13 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { data: episodes, isPending, isFetching, isError, refetch } = useEpisodes(
+const {
+  data: episodes,
+  isPending,
+  isFetching,
+  isError,
+  refetch,
+} = useEpisodes(
   () => props.showId,
   () => props.enabled,
 )
@@ -108,7 +114,9 @@ function variantForSeason(seasonNumber: number) {
 
         <ol class="ep-list" role="list">
           <li v-for="ep in season.episodes" :key="ep.id" class="ep">
-            <span class="ep-number" aria-hidden="true">{{ formatNumber(ep.number) }}</span>
+            <span class="ep-number" aria-hidden="true">{{
+              formatNumber(ep.number)
+            }}</span>
             <span class="ep-title">{{ ep.name }}</span>
             <span v-if="formatDate(ep.airdate)" class="ep-date">
               {{ formatDate(ep.airdate) }}
@@ -149,8 +157,12 @@ function variantForSeason(seasonNumber: number) {
 }
 
 /* Hide the default disclosure triangle in all browsers */
-.season-summary::-webkit-details-marker { display: none; }
-.season-summary::marker { content: ''; }
+.season-summary::-webkit-details-marker {
+  display: none;
+}
+.season-summary::marker {
+  content: '';
+}
 
 .season-arrow {
   color: var(--season-color);
@@ -245,13 +257,20 @@ function variantForSeason(seasonNumber: number) {
   .ep {
     grid-template-columns: auto 1fr;
     grid-template-areas:
-      "number title"
-      ".      date";
+      'number title'
+      '.      date';
     row-gap: var(--space-1);
   }
 
-  .ep-number { grid-area: number; }
-  .ep-title { grid-area: title; }
-  .ep-date { grid-area: date; justify-self: start; }
+  .ep-number {
+    grid-area: number;
+  }
+  .ep-title {
+    grid-area: title;
+  }
+  .ep-date {
+    grid-area: date;
+    justify-self: start;
+  }
 }
 </style>

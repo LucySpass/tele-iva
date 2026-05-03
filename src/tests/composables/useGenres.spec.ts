@@ -6,7 +6,11 @@ import type { Show } from '../../types/show'
 
 let nextId = 1
 
-function makeShow(name: string, genres: string[], rating: number | null = null): Show {
+function makeShow(
+  name: string,
+  genres: string[],
+  rating: number | null = null,
+): Show {
   return {
     id: nextId++,
     url: `https://example.test/${name}`,
@@ -48,7 +52,9 @@ describe('useGenres', () => {
     const c = makeShow('C', ['Comedy'])
 
     const result = useGenres([a, b, c])
-    const byGenre = Object.fromEntries(result.value.map((g) => [g.genre, g.shows.map((s) => s.name)]))
+    const byGenre = Object.fromEntries(
+      result.value.map((g) => [g.genre, g.shows.map((s) => s.name)]),
+    )
 
     expect(byGenre.Drama).toEqual(expect.arrayContaining(['A', 'B']))
     expect(byGenre.Drama).toHaveLength(2)
@@ -87,7 +93,11 @@ describe('useGenres', () => {
       makeShow('F', ['Sports']),
     ])
 
-    expect(result.value.map((g) => g.genre)).toEqual(['Drama', 'Sports', 'Comedy'])
+    expect(result.value.map((g) => g.genre)).toEqual([
+      'Drama',
+      'Sports',
+      'Comedy',
+    ])
   })
 
   it('breaks genre ties alphabetically', () => {
@@ -97,7 +107,11 @@ describe('useGenres', () => {
       makeShow('C', ['Action']),
     ])
 
-    expect(result.value.map((g) => g.genre)).toEqual(['Action', 'Comedy', 'Drama'])
+    expect(result.value.map((g) => g.genre)).toEqual([
+      'Action',
+      'Comedy',
+      'Drama',
+    ])
   })
 
   it('applies limitPerGenre after sorting by rating', () => {
@@ -123,7 +137,9 @@ describe('useGenres', () => {
     ]
     const result = useGenres(shows, { limitPerGenre: 2 })
 
-    expect(result.value.map((g) => ({ genre: g.genre, count: g.shows.length }))).toEqual([
+    expect(
+      result.value.map((g) => ({ genre: g.genre, count: g.shows.length })),
+    ).toEqual([
       { genre: 'Comedy', count: 2 },
       { genre: 'Drama', count: 2 },
     ])
@@ -161,7 +177,10 @@ describe('useGenres', () => {
   })
 
   it('skips shows with no genres', () => {
-    const result = useGenres([makeShow('Genreless', []), makeShow('Drama show', ['Drama'])])
+    const result = useGenres([
+      makeShow('Genreless', []),
+      makeShow('Drama show', ['Drama']),
+    ])
     expect(result.value).toHaveLength(1)
     expect(result.value[0]?.genre).toBe('Drama')
   })

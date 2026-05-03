@@ -20,7 +20,12 @@ export function useCast(
     enabled: computed(() => {
       if (!toValue(enabled)) return false
       const id = toValue(showId)
-      return id !== '' && id !== null && id !== undefined && !Number.isNaN(Number(id))
+      return (
+        id !== '' &&
+        id !== null &&
+        id !== undefined &&
+        !Number.isNaN(Number(id))
+      )
     }),
   })
 }

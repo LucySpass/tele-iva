@@ -27,7 +27,9 @@ const ratingLabel = computed(() => {
 
 const genrePreview = computed(() => props.show.genres.slice(0, 3))
 const genreLabel = computed(() =>
-  props.show.genres.length ? `Genres: ${props.show.genres.join(', ')}` : undefined,
+  props.show.genres.length
+    ? `Genres: ${props.show.genres.join(', ')}`
+    : undefined,
 )
 
 const skeletonVariant = computed(() => variantFor(props.show.id))
@@ -56,7 +58,12 @@ const skeletonVariant = computed(() => variantFor(props.show.id))
           <span v-if="ratingFormatted" class="rating" :aria-label="ratingLabel">
             <span aria-hidden="true">★</span> {{ ratingFormatted }}
           </span>
-          <span v-if="ratingFormatted && year" aria-hidden="true" class="meta-sep">·</span>
+          <span
+            v-if="ratingFormatted && year"
+            aria-hidden="true"
+            class="meta-sep"
+            >·</span
+          >
           <span v-if="year" class="year">{{ year }}</span>
         </p>
       </header>

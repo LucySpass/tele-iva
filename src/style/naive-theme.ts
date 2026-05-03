@@ -55,7 +55,11 @@ function hexToRgb(hex: string): [number, number, number] {
   ]
 }
 
-function blend(hex: string, towards: 'white' | 'black', amount: number): string {
+function blend(
+  hex: string,
+  towards: 'white' | 'black',
+  amount: number,
+): string {
   const [r, g, b] = hexToRgb(hex)
   const target = towards === 'white' ? 255 : 0
   const mix = (c: number) => Math.round(c + (target - c) * amount)

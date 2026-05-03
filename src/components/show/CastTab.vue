@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
-import { computed, onScopeDispose, ref, useId, useTemplateRef, watch } from 'vue'
+import {
+  computed,
+  onScopeDispose,
+  ref,
+  useId,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import { RouterLink } from 'vue-router'
 
 import CoverImage from '../common/CoverImage.vue'
@@ -15,7 +22,12 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { data: cast, isPending, isError, refetch } = useCast(
+const {
+  data: cast,
+  isPending,
+  isError,
+  refetch,
+} = useCast(
   () => props.showId,
   () => props.enabled,
 )
@@ -38,7 +50,10 @@ const expanded = ref(false)
 const gridId = useId()
 
 function recomputeVisible(width: number) {
-  const cols = Math.max(1, Math.floor((width + GRID_GAP) / (CELL_MIN_WIDTH + GRID_GAP)))
+  const cols = Math.max(
+    1,
+    Math.floor((width + GRID_GAP) / (CELL_MIN_WIDTH + GRID_GAP)),
+  )
   visibleCount.value = cols * PREVIEW_ROWS
 }
 
@@ -138,8 +153,12 @@ const hasOverflow = computed(
           :aria-controls="gridId"
           @click="expanded = !expanded"
         >
-          <span>{{ expanded ? 'Show less' : `Show all ${cast.length} cast members` }}</span>
-          <span class="more-arrow" aria-hidden="true">{{ expanded ? '↑' : '↓' }}</span>
+          <span>{{
+            expanded ? 'Show less' : `Show all ${cast.length} cast members`
+          }}</span>
+          <span class="more-arrow" aria-hidden="true">{{
+            expanded ? '↑' : '↓'
+          }}</span>
         </NButton>
       </div>
     </template>

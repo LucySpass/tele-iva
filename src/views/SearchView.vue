@@ -38,7 +38,6 @@ const resultCountLabel = computed(() => {
       <BackLink @click="store.clear()" />
 
       <PageHero
-        eyebrow="Find a show"
         title="Search the listings"
         subtitle="Type a title — partial spellings are forgiven."
         heading-id="search-heading"
@@ -46,7 +45,12 @@ const resultCountLabel = computed(() => {
         <SearchField variant="hero" :autofocus="true" />
       </PageHero>
 
-      <p v-if="resultCountLabel" class="result-count" role="status" aria-live="polite">
+      <p
+        v-if="resultCountLabel"
+        class="result-count"
+        role="status"
+        aria-live="polite"
+      >
         {{ resultCountLabel }}
       </p>
 

@@ -10,9 +10,21 @@ interface TestShow {
 }
 
 const shows: TestShow[] = [
-  { id: 1, name: 'Breaking Bad', summary: 'A chemistry teacher turns to crime.' },
-  { id: 2, name: 'Better Call Saul', summary: 'A lawyer with questionable ethics.' },
-  { id: 3, name: 'The Wire', summary: 'Baltimore drug trade, season by season.' },
+  {
+    id: 1,
+    name: 'Breaking Bad',
+    summary: 'A chemistry teacher turns to crime.',
+  },
+  {
+    id: 2,
+    name: 'Better Call Saul',
+    summary: 'A lawyer with questionable ethics.',
+  },
+  {
+    id: 3,
+    name: 'The Wire',
+    summary: 'Baltimore drug trade, season by season.',
+  },
   { id: 4, name: 'Succession', summary: 'A media empire and its heirs.' },
   { id: 5, name: 'Mad Men', summary: 'Advertising on Madison Avenue.' },
 ]
@@ -50,7 +62,11 @@ describe('useSearch', () => {
 
   it('respects the limit option', () => {
     const query = ref('e')
-    const limited = useSearch(shows, query, { keys: ['name'], threshold: 1, limit: 2 })
+    const limited = useSearch(shows, query, {
+      keys: ['name'],
+      threshold: 1,
+      limit: 2,
+    })
     expect(limited.value.length).toBeLessThanOrEqual(2)
   })
 

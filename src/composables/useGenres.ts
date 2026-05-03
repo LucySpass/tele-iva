@@ -38,7 +38,10 @@ export function useGenres(
           shows: limitPerGenre ? sorted.slice(0, limitPerGenre) : sorted,
         }
       })
-      .sort((a, b) => b.shows.length - a.shows.length || a.genre.localeCompare(b.genre))
+      .sort(
+        (a, b) =>
+          b.shows.length - a.shows.length || a.genre.localeCompare(b.genre),
+      )
   })
 }
 

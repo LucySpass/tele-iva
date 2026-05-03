@@ -14,7 +14,9 @@ const props = defineProps<Props>()
 
 const paddedIndex = computed(() => String(props.index).padStart(2, '0'))
 const colorIndex = computed(() => (props.index - 1) % 3)
-const headingId = computed(() => `genre-${props.genre.toLowerCase().replace(/\s+/g, '-')}`)
+const headingId = computed(
+  () => `genre-${props.genre.toLowerCase().replace(/\s+/g, '-')}`,
+)
 </script>
 
 <template>
@@ -52,17 +54,17 @@ const headingId = computed(() => `genre-${props.genre.toLowerCase().replace(/\s+
   letter-spacing: var(--letter-spacing-tight);
 }
 
-.title-block[data-color="0"] {
+.title-block[data-color='0'] {
   background: var(--color-primary);
   color: var(--color-bg);
 }
 
-.title-block[data-color="1"] {
+.title-block[data-color='1'] {
   background: var(--color-secondary);
   color: var(--color-text);
 }
 
-.title-block[data-color="2"] {
+.title-block[data-color='2'] {
   background: var(--color-accent);
   color: var(--color-bg);
 }

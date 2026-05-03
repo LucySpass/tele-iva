@@ -6,9 +6,12 @@ import AppLayout from '../components/layout/AppLayout.vue'
 import GenreSection from '../components/layout/GenreSection.vue'
 import { useGenres } from '../composables/useGenres'
 import { useShows } from '../composables/useShows'
+import { useSearchStore } from '../stores/search'
 
 const { data, isPending, isError, refetch } = useShows()
 const genres = useGenres(data, { limitPerGenre: 12 })
+
+useSearchStore().clear()
 </script>
 
 <template>
@@ -24,10 +27,7 @@ const genres = useGenres(data, { limitPerGenre: 12 })
       <SearchField variant="hero" :autofocus="true" />
     </PageHero>
 
-    <StateMessage
-      v-if="isPending"
-      headline="Cueing up tonight's listings…"
-    />
+    <StateMessage v-if="isPending" headline="Cueing up tonight's listings…" />
 
     <StateMessage
       v-else-if="isError"

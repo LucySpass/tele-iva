@@ -8,8 +8,12 @@ import { darkOverrides, lightOverrides } from './style/naive-theme'
 
 const themeStore = useThemeStore()
 
-const naiveTheme = computed(() => (themeStore.theme === 'dark' ? darkTheme : null))
-const naiveOverrides = computed(() => (themeStore.theme === 'dark' ? darkOverrides : lightOverrides))
+const naiveTheme = computed(() =>
+  themeStore.theme === 'dark' ? darkTheme : null,
+)
+const naiveOverrides = computed(() =>
+  themeStore.theme === 'dark' ? darkOverrides : lightOverrides,
+)
 </script>
 
 <template>

@@ -9,7 +9,10 @@ import type {
 const API_BASE = 'https://api.tvmaze.com'
 
 export class TVMazeError extends Error {
-  constructor(public readonly status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
     super(message)
     this.name = 'TVMazeError'
   }
@@ -18,7 +21,10 @@ export class TVMazeError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, init)
   if (!response.ok) {
-    throw new TVMazeError(response.status, `TVMaze ${response.status}: ${response.statusText}`)
+    throw new TVMazeError(
+      response.status,
+      `TVMaze ${response.status}: ${response.statusText}`,
+    )
   }
   return response.json() as Promise<T>
 }
@@ -33,15 +39,24 @@ export function fetchShow(id: number, signal?: AbortSignal): Promise<Show> {
   return request<Show>(`/shows/${id}`, { signal })
 }
 
-export function fetchCast(showId: number, signal?: AbortSignal): Promise<CastMember[]> {
+export function fetchCast(
+  showId: number,
+  signal?: AbortSignal,
+): Promise<CastMember[]> {
   return request<CastMember[]>(`/shows/${showId}/cast`, { signal })
 }
 
-export function fetchEpisodes(showId: number, signal?: AbortSignal): Promise<Episode[]> {
+export function fetchEpisodes(
+  showId: number,
+  signal?: AbortSignal,
+): Promise<Episode[]> {
   return request<Episode[]>(`/shows/${showId}/episodes`, { signal })
 }
 
-export function fetchPerson(personId: number, signal?: AbortSignal): Promise<Person> {
+export function fetchPerson(
+  personId: number,
+  signal?: AbortSignal,
+): Promise<Person> {
   return request<Person>(`/people/${personId}`, { signal })
 }
 
@@ -52,5 +67,7 @@ export function fetchPersonCredits(
   personId: number,
   signal?: AbortSignal,
 ): Promise<CastCredit[]> {
-  return request<CastCredit[]>(`/people/${personId}/castcredits?embed=show`, { signal })
+  return request<CastCredit[]>(`/people/${personId}/castcredits?embed=show`, {
+    signal,
+  })
 }

@@ -11,8 +11,12 @@ function readInitialTheme(): Theme {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
     if (stored === 'light' || stored === 'dark') return stored
-  } catch { /* localStorage may be unavailable (private mode, embedded) */ }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  } catch {
+    /* localStorage may be unavailable (private mode, embedded) */
+  }
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
 }
 
 export const useThemeStore = defineStore('theme', () => {
@@ -26,7 +30,11 @@ export const useThemeStore = defineStore('theme', () => {
 
   function set(next: Theme) {
     theme.value = next
-    try { window.localStorage.setItem(STORAGE_KEY, next) } catch { /* ignore */ }
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      /* ignore */
+    }
   }
 
   function toggle() {

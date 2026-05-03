@@ -6,45 +6,45 @@
  */
 
 :root,
-[data-theme="light"] {
+[data-theme='light'] {
   /* Surface colors */
-  --color-bg: #F4ECD8;
-  --color-surface: #EAE0CC;
-  --color-surface-alt: #DDD0B5;
+  --color-bg: #f4ecd8;
+  --color-surface: #eae0cc;
+  --color-surface-alt: #ddd0b5;
 
   /* Text colors */
-  --color-text: #2B2118;
-  --color-text-muted: #6B5D4F;
+  --color-text: #2b2118;
+  --color-text-muted: #6b5d4f;
 
   /* Borders */
-  --color-border: #D4C5A8;
+  --color-border: #d4c5a8;
 
   /* Brand accent colors */
-  --color-primary: #2A9D8F;        /* Deep turquoise */
-  --color-secondary: #E9B949;      /* Warm mustard gold */
-  --color-accent: #E07A5F;         /* Dusty coral pink */
+  --color-primary: #2a9d8f; /* Deep turquoise */
+  --color-secondary: #e9b949; /* Warm mustard gold */
+  --color-accent: #e07a5f; /* Dusty coral pink */
 
   /* Semantic feedback */
-  --color-error: #C44536;
+  --color-error: #c44536;
   --color-success: #588157;
 }
 
-[data-theme="dark"] {
-  --color-bg: #1A1410;
-  --color-surface: #26201A;
-  --color-surface-alt: #332B23;
+[data-theme='dark'] {
+  --color-bg: #1a1410;
+  --color-surface: #26201a;
+  --color-surface-alt: #332b23;
 
-  --color-text: #F4ECD8;
-  --color-text-muted: #B8A88E;
+  --color-text: #f4ecd8;
+  --color-text-muted: #b8a88e;
 
-  --color-border: #3D342A;
+  --color-border: #3d342a;
 
-  --color-primary: #48C9B0;
-  --color-secondary: #F4C95D;
-  --color-accent: #FF8C70;
+  --color-primary: #48c9b0;
+  --color-secondary: #f4c95d;
+  --color-accent: #ff8c70;
 
-  --color-error: #E76F51;
-  --color-success: #89B486;
+  --color-error: #e76f51;
+  --color-success: #89b486;
 }
 
 :root {
@@ -52,13 +52,13 @@
   --font-display: 'Abril Fatface', Georgia, serif;
   --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --font-size-xs: 0.75rem;     /* 12px */
-  --font-size-sm: 0.875rem;    /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-lg: 1.25rem;     /* 20px */
-  --font-size-xl: 1.75rem;     /* 28px */
-  --font-size-2xl: 2.5rem;     /* 40px */
-  --font-size-3xl: 4rem;       /* 64px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.25rem; /* 20px */
+  --font-size-xl: 1.75rem; /* 28px */
+  --font-size-2xl: 2.5rem; /* 40px */
+  --font-size-3xl: 4rem; /* 64px */
 
   --line-height-tight: 1.1;
   --line-height-snug: 1.3;
@@ -70,14 +70,14 @@
   --letter-spacing-wider: 0.12em;
 
   /* Spacing scale (4px base) */
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-8: 2rem;      /* 32px */
-  --space-12: 3rem;     /* 48px */
-  --space-16: 4rem;     /* 64px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
 
   /* Layout */
   --max-width-content: 1280px;

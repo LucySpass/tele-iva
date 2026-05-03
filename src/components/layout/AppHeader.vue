@@ -20,7 +20,11 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
 
 <template>
   <header class="app-header">
-    <RouterLink to="/" class="brand-link" aria-label="Tele Iva — back to dashboard">
+    <RouterLink
+      to="/"
+      class="brand-link"
+      aria-label="Tele Iva — back to dashboard"
+    >
       <Brand />
     </RouterLink>
 
@@ -99,13 +103,17 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
   .app-header {
     grid-template-columns: 1fr auto;
     grid-template-areas:
-      "brand actions"
-      "nav nav";
+      'brand actions'
+      'nav nav';
     row-gap: var(--space-3);
   }
 
-  .brand-link { grid-area: brand; }
-  .actions { grid-area: actions; }
+  .brand-link {
+    grid-area: brand;
+  }
+  .actions {
+    grid-area: actions;
+  }
 
   .primary-nav {
     grid-area: nav;

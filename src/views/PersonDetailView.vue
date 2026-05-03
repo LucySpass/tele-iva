@@ -17,7 +17,9 @@ interface Props {
 const props = defineProps<Props>()
 
 const { data: person, isPending, isError, refetch } = usePerson(() => props.id)
-const { data: credits, isPending: creditsLoading } = usePersonCredits(() => props.id)
+const { data: credits, isPending: creditsLoading } = usePersonCredits(
+  () => props.id,
+)
 
 // Build the filmography from each credit's inline show. Dedupe by show id —
 // an actor can have multiple character credits on the same show ("Self"
@@ -60,10 +62,7 @@ const lifeDates = computed(() => {
 
 <template>
   <AppLayout>
-    <StateMessage
-      v-if="isPending"
-      headline="Looking up the playbill…"
-    />
+    <StateMessage v-if="isPending" headline="Looking up the playbill…" />
 
     <StateMessage
       v-else-if="isError"
@@ -90,7 +89,8 @@ const lifeDates = computed(() => {
             v-if="person.country && lifeDates"
             aria-hidden="true"
             class="meta-sep"
-          >·</span>
+            >·</span
+          >
           <span v-if="lifeDates">{{ lifeDates }}</span>
         </template>
       </DetailHero>

@@ -77,17 +77,17 @@ watch(
   transition: opacity var(--duration-base) var(--easing-standard);
 }
 
-.skeleton[data-variant="primary"] {
+.skeleton[data-variant='primary'] {
   background: var(--color-primary);
   color: var(--color-bg);
 }
 
-.skeleton[data-variant="secondary"] {
+.skeleton[data-variant='secondary'] {
   background: var(--color-secondary);
   color: var(--color-text);
 }
 
-.skeleton[data-variant="accent"] {
+.skeleton[data-variant='accent'] {
   background: var(--color-accent);
   color: var(--color-bg);
 }
@@ -131,7 +131,8 @@ watch(
 }
 
 @keyframes cover-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.65;
   }
   50% {

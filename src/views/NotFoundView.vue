@@ -28,8 +28,8 @@ const channels = [
       <div class="editorial">
         <h1 class="headline">We've lost the signal.</h1>
         <p class="subhead">
-          You've tuned to a frequency we don't broadcast on.
-          Try adjusting the dial — or head back to the main listings.
+          You've tuned to a frequency we don't broadcast on. Try adjusting the
+          dial — or head back to the main listings.
         </p>
       </div>
 
@@ -57,8 +57,8 @@ const channels = [
       </nav>
 
       <p class="fine-print">
-        If you think this channel should exist, please check the
-        antenna — or blame the intern.
+        If you think this channel should exist, please check the antenna — or
+        blame the intern.
       </p>
     </article>
   </AppLayout>

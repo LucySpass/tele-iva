@@ -103,11 +103,18 @@ const facts = computed<Fact[]>(() => {
   const data = show.value
   if (!data) return list
   if (network.value) list.push({ label: 'Network', value: network.value })
-  if (data.runtime) list.push({ label: 'Runtime', value: `${data.runtime} min` })
-  if (scheduleText.value) list.push({ label: 'Schedule', value: scheduleText.value })
+  if (data.runtime)
+    list.push({ label: 'Runtime', value: `${data.runtime} min` })
+  if (scheduleText.value)
+    list.push({ label: 'Schedule', value: scheduleText.value })
   if (data.premiered) list.push({ label: 'Premiered', value: data.premiered })
   if (data.ended) list.push({ label: 'Ended', value: data.ended })
-  if (data.officialSite) list.push({ label: 'Official site', value: 'Visit', href: data.officialSite })
+  if (data.officialSite)
+    list.push({
+      label: 'Official site',
+      value: 'Visit',
+      href: data.officialSite,
+    })
   return list
 })
 </script>
@@ -116,14 +123,25 @@ const facts = computed<Fact[]>(() => {
   <AppLayout>
     <StateMessage v-if="isPending" headline="Pulling the show details…" />
 
-    <StateMessage v-else-if="isError" role="alert" headline="We couldn't reach the show."
-      subtitle="The page may have changed channels." retry-label="Try again" @retry="refetch()" />
+    <StateMessage
+      v-else-if="isError"
+      role="alert"
+      headline="We couldn't reach the show."
+      subtitle="The page may have changed channels."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
     <article v-else-if="show" class="show-detail">
       <BackLink />
 
-      <DetailHero :image-src="show.image?.original ?? null" :image-alt="`${show.name} cover art`"
-        :variant="skeletonVariant" :title="show.name" :tags-label="genreLabel">
+      <DetailHero
+        :image-src="show.image?.original ?? null"
+        :image-alt="`${show.name} cover art`"
+        :variant="skeletonVariant"
+        :title="show.name"
+        :tags-label="genreLabel"
+      >
         <template #eyebrow>
           <span>{{ show.type }}</span>
           <span v-if="show.language" aria-hidden="true">·</span>
@@ -134,7 +152,12 @@ const facts = computed<Fact[]>(() => {
           <span v-if="ratingFormatted" class="rating" :aria-label="ratingLabel">
             <span aria-hidden="true">★</span> {{ ratingFormatted }}
           </span>
-          <span v-if="ratingFormatted && year" aria-hidden="true" class="meta-sep">·</span>
+          <span
+            v-if="ratingFormatted && year"
+            aria-hidden="true"
+            class="meta-sep"
+            >·</span
+          >
           <span v-if="year">{{ year }}</span>
           <span aria-hidden="true" class="meta-sep">·</span>
           <span>{{ show.status }}</span>
@@ -147,7 +170,11 @@ const facts = computed<Fact[]>(() => {
         </template>
       </DetailHero>
 
-      <section v-if="show.summary" class="max-width" aria-labelledby="summary-heading">
+      <section
+        v-if="show.summary"
+        class="max-width"
+        aria-labelledby="summary-heading"
+      >
         <h2 id="summary-heading" class="section-title">Synopsis</h2>
         <!-- TVMaze returns sanitized HTML for summaries; safe to render. -->
         <div class="summary-body" v-html="show.summary"></div>
@@ -155,24 +182,55 @@ const facts = computed<Fact[]>(() => {
 
       <section class="tabs-section" aria-label="Cast and episodes">
         <div role="tablist" :class="['tab-list', `tab-list--${activeTab}`]">
-          <button v-for="tab in VALID_TABS" :key="tab" role="tab" :aria-selected="activeTab === tab"
-            :class="['tab-trigger', { active: activeTab === tab }]" @click="activeTab = tab">
+          <button
+            v-for="tab in VALID_TABS"
+            :key="tab"
+            role="tab"
+            :aria-selected="activeTab === tab"
+            :class="['tab-trigger', { active: activeTab === tab }]"
+            @click="activeTab = tab"
+          >
             {{ TAB_LABELS[tab] }}
           </button>
         </div>
 
-        <CastTab v-if="activeTab === 'cast'" role="tabpanel" :show-id="show.id" :enabled="castEverActive" />
-        <EpisodesTab v-else role="tabpanel" :show-id="show.id" :enabled="episodesEverActive" />
+        <CastTab
+          v-if="activeTab === 'cast'"
+          role="tabpanel"
+          :show-id="show.id"
+          :enabled="castEverActive"
+        />
+        <EpisodesTab
+          v-else
+          role="tabpanel"
+          :show-id="show.id"
+          :enabled="episodesEverActive"
+        />
       </section>
 
-      <section v-if="facts.length" class="facts" aria-labelledby="facts-heading">
+      <section
+        v-if="facts.length"
+        class="facts"
+        aria-labelledby="facts-heading"
+      >
         <h2 id="facts-heading" class="section-title">On the dial</h2>
-        <NTable :bordered="false" :bottom-bordered="false" size="small" class="max-width">
+        <NTable
+          :bordered="false"
+          :bottom-bordered="false"
+          size="small"
+          class="max-width"
+        >
           <tbody>
             <tr v-for="fact in facts" :key="fact.label">
               <td scope="row" class="facts-key">{{ fact.label }}</td>
               <td class="facts-value">
-                <a v-if="fact.href" :href="fact.href" target="_blank" rel="noopener noreferrer">{{ fact.value }}</a>
+                <a
+                  v-if="fact.href"
+                  :href="fact.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >{{ fact.value }}</a
+                >
                 <template v-else>{{ fact.value }}</template>
               </td>
             </tr>

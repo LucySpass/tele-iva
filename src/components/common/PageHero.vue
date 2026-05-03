@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  eyebrow: string
+  eyebrow?: string
   title: string
   subtitle?: string
   headingId?: string
@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <header class="page-hero" :class="[`page-hero--${size}`]">
-    <p class="eyebrow">{{ eyebrow }}</p>
+    <p v-if="eyebrow" class="eyebrow">{{ eyebrow }}</p>
     <h1 :id="headingId" class="page-hero__title">{{ title }}</h1>
     <p v-if="subtitle" class="page-hero__sub">{{ subtitle }}</p>
     <slot />
@@ -46,11 +46,6 @@ withDefaults(defineProps<Props>(), {
   color: var(--color-text-muted);
   max-width: 48ch;
   margin: 0 0 var(--space-3);
-}
-
-.page-hero--default .page-hero__sub {
-  font-size: var(--font-size-sm);
-  margin: 0;
 }
 
 @media (max-width: 640px) {

@@ -46,7 +46,7 @@ body {
 
 /* Cream specks on dark in dark mode — otherwise dark specks on dark bg
    render invisible. */
-[data-theme="dark"] body {
+[data-theme='dark'] body {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.85 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
 }
 
@@ -204,13 +204,13 @@ p {
 
 /* Color variant mapping. Any element with [data-variant] gets a
    --variant-color custom property that descendants can consume. */
-[data-variant="primary"] {
+[data-variant='primary'] {
   --variant-color: var(--color-primary);
 }
-[data-variant="secondary"] {
+[data-variant='secondary'] {
   --variant-color: var(--color-secondary);
 }
-[data-variant="accent"] {
+[data-variant='accent'] {
   --variant-color: var(--color-accent);
 }
 

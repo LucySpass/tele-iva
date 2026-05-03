@@ -1,5 +1,11 @@
 import Fuse, { type IFuseOptions } from 'fuse.js'
-import { computed, markRaw, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
+import {
+  computed,
+  markRaw,
+  toValue,
+  type ComputedRef,
+  type MaybeRefOrGetter,
+} from 'vue'
 
 export interface UseSearchOptions<T> {
   /** Fields on each item to search. The brief calls for name-only; pass `['name']`. */
@@ -39,7 +45,8 @@ export function useSearch<T>(
   return computed(() => {
     const q = toValue(query).trim()
     if (q.length === 0) return []
-    const fuseOptions = options.limit !== undefined ? { limit: options.limit } : undefined
+    const fuseOptions =
+      options.limit !== undefined ? { limit: options.limit } : undefined
     return fuse.value.search(q, fuseOptions).map((result) => result.item)
   })
 }
