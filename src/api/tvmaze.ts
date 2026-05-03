@@ -1,4 +1,10 @@
-import type { Show } from '../types/show'
+import type {
+  CastCredit,
+  CastMember,
+  Episode,
+  Person,
+  Show,
+} from '../types/show'
 
 const API_BASE = 'https://api.tvmaze.com'
 
@@ -25,4 +31,27 @@ export function fetchShows(page = 0, signal?: AbortSignal): Promise<Show[]> {
 
 export function fetchShow(id: number, signal?: AbortSignal): Promise<Show> {
   return request<Show>(`/shows/${id}`, { signal })
+}
+
+export function fetchCast(showId: number, signal?: AbortSignal): Promise<CastMember[]> {
+  return request<CastMember[]>(`/shows/${showId}/cast`, { signal })
+}
+
+export function fetchEpisodes(showId: number, signal?: AbortSignal): Promise<Episode[]> {
+  return request<Episode[]>(`/shows/${showId}/episodes`, { signal })
+}
+
+export function fetchPerson(personId: number, signal?: AbortSignal): Promise<Person> {
+  return request<Person>(`/people/${personId}`, { signal })
+}
+
+/**
+ * Cast credits with the full Show inlined under `_embedded.show`. One round
+ * trip serves the entire filmography — no fan-out per credit.
+ */
+export function fetchPersonCredits(
+  personId: number,
+  signal?: AbortSignal,
+): Promise<CastCredit[]> {
+  return request<CastCredit[]>(`/people/${personId}/castcredits?embed=show`, { signal })
 }

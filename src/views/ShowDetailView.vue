@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { NTable, NTag } from 'naive-ui'
-import { computed } from 'vue'
+import { NTable, NTabPane, NTabs, NTag } from 'naive-ui'
+import { computed, ref, watch } from 'vue'
 
 import BackLink from '../components/common/BackLink.vue'
-import CoverImage from '../components/common/CoverImage.vue'
+import DetailHero from '../components/common/DetailHero.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
+import CastTab from '../components/show/CastTab.vue'
+import EpisodesTab from '../components/show/EpisodesTab.vue'
 import { useShow } from '../composables/useShow'
 
 interface Props {
@@ -58,6 +60,25 @@ interface Fact {
   href?: string
 }
 
+// Tab activation drives lazy fetching: the composables only run their
+// queries when their `enabled` flag flips true. Once a tab has been opened
+// it stays "ever-activated" so re-clicking doesn't trigger a refetch dance.
+const activeTab = ref<'cast' | 'episodes'>('cast')
+const castEverActive = ref(true) // cast is the default tab on landing
+const episodesEverActive = ref(false)
+
+watch(activeTab, (next) => {
+  if (next === 'cast') castEverActive.value = true
+  if (next === 'episodes') episodesEverActive.value = true
+})
+
+// Color block under the active tab rotates per tab — Cast wears teal,
+// Episodes wears gold. Drives the `--tab-bar-color` variable consumed by
+// scoped CSS below.
+const tabBarColor = computed(() =>
+  activeTab.value === 'episodes' ? 'var(--color-secondary)' : 'var(--color-primary)',
+)
+
 const facts = computed<Fact[]>(() => {
   const list: Fact[] = []
   const data = show.value
@@ -84,42 +105,59 @@ const facts = computed<Fact[]>(() => {
 
     <article v-else-if="show" class="show-detail">
       <BackLink />
-      <div class="hero">
-        <div class="cover">
-          <CoverImage :src="show.image?.original ?? null" :alt="`${show.name} cover art`" :variant="skeletonVariant" />
-        </div>
 
-        <div class="masthead">
-          <p class="eyebrow">
-            <span>{{ show.type }}</span>
-            <span v-if="show.language" aria-hidden="true">·</span>
-            <span v-if="show.language">{{ show.language }}</span>
-          </p>
+      <DetailHero
+        :image-src="show.image?.original ?? null"
+        :image-alt="`${show.name} cover art`"
+        :variant="skeletonVariant"
+        :title="show.name"
+        :tags-label="genreLabel"
+      >
+        <template #eyebrow>
+          <span>{{ show.type }}</span>
+          <span v-if="show.language" aria-hidden="true">·</span>
+          <span v-if="show.language">{{ show.language }}</span>
+        </template>
 
-          <h1 class="title">{{ show.name }}</h1>
+        <template #meta>
+          <span v-if="ratingFormatted" class="rating" :aria-label="ratingLabel">
+            <span aria-hidden="true">★</span> {{ ratingFormatted }}
+          </span>
+          <span v-if="ratingFormatted && year" aria-hidden="true" class="meta-sep">·</span>
+          <span v-if="year">{{ year }}</span>
+          <span aria-hidden="true" class="meta-sep">·</span>
+          <span>{{ show.status }}</span>
+        </template>
 
-          <p class="meta">
-            <span v-if="ratingFormatted" class="rating" :aria-label="ratingLabel">
-              <span aria-hidden="true">★</span> {{ ratingFormatted }}
-            </span>
-            <span v-if="ratingFormatted && year" aria-hidden="true" class="meta-sep">·</span>
-            <span v-if="year">{{ year }}</span>
-            <span aria-hidden="true" class="meta-sep">·</span>
-            <span class="status">{{ show.status }}</span>
-          </p>
-
-          <ul v-if="show.genres.length" class="genres" :aria-label="genreLabel">
-            <li v-for="genre in show.genres" :key="genre">
-              <NTag size="small" :bordered="false">{{ genre }}</NTag>
-            </li>
-          </ul>
-        </div>
-      </div>
+        <template v-if="show.genres.length" #tags>
+          <li v-for="genre in show.genres" :key="genre">
+            <NTag size="small" :bordered="false">{{ genre }}</NTag>
+          </li>
+        </template>
+      </DetailHero>
 
       <section v-if="show.summary" class="max-width" aria-labelledby="summary-heading">
         <h2 id="summary-heading" class="section-title">Synopsis</h2>
         <!-- TVMaze returns sanitized HTML for summaries; safe to render. -->
         <div class="summary-body" v-html="show.summary"></div>
+      </section>
+
+      <section class="tabs-section" aria-label="Cast and episodes">
+        <NTabs
+          v-model:value="activeTab"
+          type="line"
+          size="large"
+          animated
+          class="show-tabs"
+          :style="{ '--tab-bar-color': tabBarColor }"
+        >
+          <NTabPane name="cast" tab="Cast">
+            <CastTab :show-id="show.id" :enabled="castEverActive" />
+          </NTabPane>
+          <NTabPane name="episodes" tab="Episodes">
+            <EpisodesTab :show-id="show.id" :enabled="episodesEverActive" />
+          </NTabPane>
+        </NTabs>
       </section>
 
       <section v-if="facts.length" class="facts" aria-labelledby="facts-heading">
@@ -181,89 +219,6 @@ const facts = computed<Fact[]>(() => {
   gap: var(--space-6);
 }
 
-.hero {
-  display: grid;
-  gap: var(--space-8);
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .hero {
-    grid-template-columns: minmax(220px, 320px) 1fr;
-    align-items: start;
-    gap: var(--space-12);
-  }
-}
-
-.cover {
-  aspect-ratio: 3 / 4;
-  border: var(--border-width) solid var(--color-border);
-  overflow: hidden;
-}
-
-.masthead {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
-  color: var(--color-text-muted);
-}
-
-.title {
-  font-size: var(--font-size-2xl);
-  letter-spacing: var(--letter-spacing-tight);
-  margin: 0;
-}
-
-@media (min-width: 768px) {
-  .title {
-    font-size: var(--font-size-3xl);
-  }
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: 0;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-text-muted);
-}
-
-.rating {
-  color: var(--color-text);
-}
-
-.meta-sep {
-  color: var(--color-border);
-}
-
-.genres {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  padding: 0;
-  margin: 0;
-}
-
-.genres li {
-  list-style: none;
-}
-
 .section-title {
   font-size: var(--font-size-xl);
   margin: 0 0 var(--space-4);
@@ -288,6 +243,31 @@ const facts = computed<Fact[]>(() => {
 
 .summary-body :deep(p:last-child) {
   margin-bottom: 0;
+}
+
+.tabs-section {
+  margin-block: var(--space-4);
+}
+
+/* Naive UI tabs, themed magazine-style: editorial display-serif labels,
+   thick color block under the active tab. Color rotates per tab via
+   :nth-child so Cast/Episodes feel like distinct magazine sections. */
+.show-tabs :deep(.n-tabs-tab) {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 400;
+  letter-spacing: var(--letter-spacing-tight);
+  padding: var(--space-3) var(--space-4);
+}
+
+.show-tabs :deep(.n-tabs-tab .n-tabs-tab__label) {
+  font-family: var(--font-display);
+}
+
+.show-tabs :deep(.n-tabs-bar) {
+  height: 4px;
+  background: var(--tab-bar-color, var(--color-primary));
+  transition: background var(--duration-base) var(--easing-standard);
 }
 
 .facts-key {

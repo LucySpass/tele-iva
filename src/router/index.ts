@@ -25,6 +25,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/ShowDetailView.vue'),
     props: true,
   },
+  {
+    path: '/people/:id',
+    name: 'person-detail',
+    component: () => import('../views/PersonDetailView.vue'),
+    props: true,
+  },
 ]
 
 const router = createRouter({
