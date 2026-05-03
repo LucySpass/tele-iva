@@ -17,10 +17,10 @@ properties so themes (light / dark) flip from a single attribute on `<html>`.
 
 ### Requirements
 
-| | |
-| --- | --- |
-| **Node.js** | `^20.19.0 \|\| >=22.12.0` (declared in `package.json` `engines`) |
-| **npm** | `>=10` (any version shipping with a supported Node release) |
+|             |                                                                                     |
+| ----------- | ----------------------------------------------------------------------------------- |
+| **Node.js** | `^20.19.0 \|\| >=22.12.0` (declared in `package.json` `engines`)                    |
+| **npm**     | `>=10` (any version shipping with a supported Node release)                         |
 | **Browser** | Any evergreen browser. Container queries and `useId` rely on baseline-2024 features |
 
 `nvm use` will pick up the version range if a project-local `.nvmrc` is added; in the
@@ -36,7 +36,11 @@ npm run build        # production build → dist/
 npm run preview      # serve dist/ locally to verify the production bundle
 npm run type-check   # vue-tsc --build, strict mode
 npm run test:unit    # Vitest in watch mode
+npm run format       # Prettier — format all files in src/
 ```
+
+A **pre-commit hook** (via `simple-git-hooks` + `lint-staged`) runs Prettier
+automatically on every staged file so formatting never drifts.
 
 There are no environment variables, API keys, or local services required —
 TVMaze is a public API and the app talks to it directly from the browser.
@@ -47,17 +51,18 @@ TVMaze is a public API and the app talks to it directly from the browser.
 
 ### Stack — what and why
 
-| Layer | Choice | Why |
-| --- | --- | --- |
-| Framework | **Vue 3** (Composition API + `<script setup>`) | Brief required Vue. Composition API gives clean composable extraction and lets TypeScript inference work end-to-end. |
-| Bundler | **Vite** | Fast dev start, native ESM HMR, function-form `defineConfig` makes the GitHub Pages base path conditional on build vs. dev. |
-| Language | **TypeScript** (strict, `noUncheckedIndexedAccess`) | API responses, store contracts, and prop types are type-checked at the boundary. Catches the kind of bugs that would otherwise show up only when a particular code path runs. |
-| Routing | **Vue Router** (createWebHistory) | Lazy route loading per dynamic import, named routes, typed `meta`. Clean URLs work on GitHub Pages via a 404.html SPA-fallback trick (see `vite.config.ts`). |
-| UI state | **Pinia** | Two stores: `theme` and `search`. Both are genuine UI state shared across the tree (theme toggles every component; search drives header + dashboard hero + /search view). Nothing else justified a store. |
-| Server state | **TanStack Vue Query** | Caching, automatic cancellation via `AbortSignal`, request dedupe, and `enabled` gating for tab-lazy fetches — all primitives I'd otherwise have to write by hand. |
-| Component primitives | **Naive UI** | `NCard`, `NButton`, `NInput`, `NTabs`, `NCollapse`, `NTable`, `NTag`, `NIcon`, `NConfigProvider`. Themed via overrides driven from the same design tokens as the rest of the app. |
-| Search | **Fuse.js** | Fuzzy in-memory search over the cached show list, name-only per the brief. No extra API call — reuses the show index already in the Vue Query cache. |
-| Tests | **Vitest + Vue Test Utils** | First-party Vite integration; same module graph and TS config as the app. |
+| Layer                | Choice                                              | Why                                                                                                                                                                                                       |
+| -------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework            | **Vue 3** (Composition API + `<script setup>`)      | Brief required Vue. Composition API gives clean composable extraction and lets TypeScript inference work end-to-end.                                                                                      |
+| Bundler              | **Vite**                                            | Fast dev start, native ESM HMR, function-form `defineConfig` makes the GitHub Pages base path conditional on build vs. dev.                                                                               |
+| Language             | **TypeScript** (strict, `noUncheckedIndexedAccess`) | API responses, store contracts, and prop types are type-checked at the boundary. Catches the kind of bugs that would otherwise show up only when a particular code path runs.                             |
+| Routing              | **Vue Router** (createWebHistory)                   | Lazy route loading per dynamic import, named routes, typed `meta`. Clean URLs work on GitHub Pages via a 404.html SPA-fallback trick (see `vite.config.ts`).                                              |
+| UI state             | **Pinia**                                           | Two stores: `theme` and `search`. Both are genuine UI state shared across the tree (theme toggles every component; search drives header + dashboard hero + /search view). Nothing else justified a store. |
+| Server state         | **TanStack Vue Query**                              | Caching, automatic cancellation via `AbortSignal`, request dedupe, and `enabled` gating for tab-lazy fetches — all primitives I'd otherwise have to write by hand.                                        |
+| Component primitives | **Naive UI**                                        | `NCard`, `NButton`, `NInput`, `NTable`, `NTag`, `NIcon`, `NConfigProvider`. Themed via overrides driven from the same design tokens as the rest of the app.                                               |
+| Search               | **Fuse.js**                                         | Fuzzy in-memory search over the cached show list, name-only per the brief. No extra API call — reuses the show index already in the Vue Query cache.                                                      |
+| Tests                | **Vitest + Vue Test Utils**                         | First-party Vite integration; same module graph and TS config as the app.                                                                                                                                 |
+| Formatting           | **Prettier**                                        | Single-quote, no-semi config. Pre-commit hook via `simple-git-hooks` + `lint-staged`.                                                                                                                     |
 
 Minimal dependencies is a deliberate choice. No utility-CSS framework, no icon
 library, no extra component kit — every dependency earns its weight.
@@ -146,12 +151,16 @@ download.
 - Genre and content sections use `aria-labelledby` to associate headings.
 - Icon-only buttons (theme toggle, social links) have explicit `aria-label`.
 - `:focus-visible` ring is 3 px gold (`--color-secondary`) — never `outline:
-  none` without a clear replacement.
+none` without a clear replacement.
 - `prefers-reduced-motion` zeroes animation/transition durations from a
   single global block.
-- The collapsible seasons (`NCollapse`) and tabs (`NTabs`) inherit Naive UI's
-  built-in keyboard support and ARIA wiring; the `Show all cast members`
-  button carries `aria-expanded` + `aria-controls` pointing to the grid.
+- The collapsible seasons use native `<details>`/`<summary>` elements,
+  which provide keyboard support and ARIA semantics for free. Tabs on the
+  show detail page use native `<button>` elements with `role="tablist"` /
+  `role="tab"` / `role="tabpanel"` wiring. Both replaced Naive UI
+  wrappers (`NCollapse`, `NTabs`) for better accessibility and fewer
+  runtime dependencies. The `Show all cast members` button carries
+  `aria-expanded` + `aria-controls` pointing to the grid.
 
 ### Magazine details
 
@@ -196,7 +205,7 @@ src/
       HorizontalShowList.vue
     show/                     # Show-detail-specific
       CastTab.vue             # Two-row preview + Show all toggle
-      EpisodesTab.vue         # Collapsible seasons (NCollapse)
+      EpisodesTab.vue         # Collapsible seasons (native <details>)
   composables/
     useCast.ts                # Vue Query: cast for a show
     useDebounce.ts            # Generic Ref<T> → debounced Ref<T>
@@ -212,9 +221,10 @@ src/
     theme.ts                  # Pinia: theme + persistence
   views/
     DashboardView.vue
+    NotFoundView.vue          # 404 page with vintage TV theme
     PersonDetailView.vue      # Filmography sorted by rating-then-name
     SearchView.vue
-    ShowDetailView.vue        # Hero + Synopsis + Tabs + Facts table
+    ShowDetailView.vue        # Hero + Synopsis + native Tabs + Facts table
   router/
     index.ts                  # Lazy routes, RouteMeta augmentation
   style/
@@ -222,8 +232,10 @@ src/
     global.css                # Reset, typography, focus, film grain
     naive-theme.ts            # Naive UI override objects
   tests/
+    api/                      # tvmaze (request helper, endpoint URLs)
     composables/              # useDebounce, useGenres, useSearch
     stores/                   # search, theme
+    utils/                    # variant
   types/
     show.ts                   # TVMaze API response shapes
   utils/
@@ -262,13 +274,15 @@ a navigable page is a single declaration, no second list to keep in sync.
 
 Unit tests live in `src/tests/`:
 
-| File | Covers |
-| --- | --- |
-| `composables/useDebounce.spec.ts` | initial seed, delay, latest-wins on bursts, scope-disposal cancellation |
-| `composables/useGenres.spec.ts` | grouping, rating sort with null handling, alphabetical tiebreak, `limitPerGenre`, ref + getter reactivity, input non-mutation |
-| `composables/useSearch.spec.ts` | empty / whitespace queries, exact match, fuzzy typo, name-only enforcement, limit, query reactivity, source reactivity, undefined source |
-| `stores/search.spec.ts` | initial empty, immediate query writes, debounced propagation, `clear()` propagation, latest-wins on bursts |
-| `stores/theme.spec.ts` | initial resolution (localStorage / `prefers-color-scheme` / fallback), `toggle()`, `set()`, `data-theme` application, invalid stored values |
+| File                              | Covers                                                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `composables/useDebounce.spec.ts` | initial seed, delay, latest-wins on bursts, scope-disposal cancellation                                                                     |
+| `composables/useGenres.spec.ts`   | grouping, rating sort with null handling, alphabetical tiebreak, `limitPerGenre`, ref + getter reactivity, input non-mutation               |
+| `composables/useSearch.spec.ts`   | empty / whitespace queries, exact match, fuzzy typo, name-only enforcement, limit, query reactivity, source reactivity, undefined source    |
+| `stores/search.spec.ts`           | initial empty, immediate query writes, debounced propagation, `clear()` propagation, latest-wins on bursts                                  |
+| `stores/theme.spec.ts`            | initial resolution (localStorage / `prefers-color-scheme` / fallback), `toggle()`, `set()`, `data-theme` application, invalid stored values |
+| `api/tvmaze.spec.ts`              | JSON parsing, `TVMazeError` with status + name, abort signal forwarding, correct URL for all endpoints                                      |
+| `utils/variant.spec.ts`           | cycling primary → secondary → accent → wraparound, large-number stability                                                                   |
 
 `npm run test:unit` runs them all in watch mode; CI invokes `vitest run` (via
 type-check + build in the deploy workflow).
