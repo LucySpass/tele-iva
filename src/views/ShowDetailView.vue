@@ -249,7 +249,7 @@ const facts = computed<Fact[]>(() => {
 }
 
 .max-width {
-  max-width: calc(var(--max-width-content) / 2);
+  max-width: var(--max-width-narrow);
 }
 
 .summary-body {
@@ -321,7 +321,7 @@ const facts = computed<Fact[]>(() => {
   color: var(--color-text);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .facts-key {
     width: auto;
   }

@@ -42,7 +42,7 @@ const resultCountLabel = computed(() => {
         subtitle="Type a title — partial spellings are forgiven."
         heading-id="search-heading"
       >
-        <SearchField variant="hero" :autofocus="true" />
+        <SearchField :autofocus="true" />
       </PageHero>
 
       <p

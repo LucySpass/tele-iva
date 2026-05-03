@@ -24,6 +24,7 @@ function handleKey(event: KeyboardEvent) {
 
   event.preventDefault()
   link.focus()
+  link.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 }
 </script>
 

@@ -81,6 +81,8 @@
 
   /* Layout */
   --max-width-content: 1280px;
+  --max-width-narrow: 640px;
+  --max-width-input: 36rem;
   --header-height: 4.5rem;
 
   /* Borders */

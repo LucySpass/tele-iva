@@ -28,25 +28,27 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
       <Brand />
     </RouterLink>
 
-    <nav class="primary-nav" aria-label="Primary">
-      <RouterLink
-        v-for="item in navItems"
-        :key="item.to"
-        :to="item.to"
-        custom
-        v-slot="{ href, navigate, isActive }"
-      >
-        <NButton
-          tag="a"
-          text
-          :href="href"
-          class="nav-link"
-          :class="{ 'is-active': isActive }"
-          @click="navigate"
-        >
-          {{ item.label }}
-        </NButton>
-      </RouterLink>
+    <nav class="primary-nav" aria-label="Navigation">
+      <ul class="nav-list">
+        <li v-for="item in navItems" :key="item.to">
+          <RouterLink
+            :to="item.to"
+            custom
+            v-slot="{ href, navigate, isActive }"
+          >
+            <NButton
+              tag="a"
+              text
+              :href="href"
+              class="nav-link"
+              :class="{ 'is-active': isActive }"
+              @click="navigate"
+            >
+              {{ item.label }}
+            </NButton>
+          </RouterLink>
+        </li>
+      </ul>
     </nav>
 
     <div class="actions">
@@ -78,9 +80,13 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
 }
 
 .primary-nav {
+  justify-self: center;
+}
+
+.nav-list {
   display: flex;
   gap: var(--space-6);
-  justify-self: center;
+  list-style: none;
 }
 
 .nav-link {
@@ -111,6 +117,7 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
   .brand-link {
     grid-area: brand;
   }
+
   .actions {
     grid-area: actions;
   }

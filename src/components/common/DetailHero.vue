@@ -82,7 +82,6 @@ withDefaults(defineProps<Props>(), {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin: 0;
 }
 
 .title {
@@ -90,7 +89,6 @@ withDefaults(defineProps<Props>(), {
   font-size: var(--font-size-2xl);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
-  margin: 0;
 }
 
 @media (min-width: 768px) {
@@ -104,7 +102,6 @@ withDefaults(defineProps<Props>(), {
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin: 0;
   font-size: var(--font-size-sm);
   font-weight: 600;
   text-transform: uppercase;
@@ -127,6 +124,5 @@ withDefaults(defineProps<Props>(), {
   flex-wrap: wrap;
   gap: var(--space-1);
   padding: 0;
-  margin: 0;
 }
 </style>

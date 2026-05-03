@@ -24,7 +24,7 @@ useSearchStore().clear()
       size="large"
       class="hero"
     >
-      <SearchField variant="hero" :autofocus="true" />
+      <SearchField :autofocus="true" />
     </PageHero>
 
     <StateMessage v-if="isPending" headline="Cueing up tonight's listings…" />

@@ -253,7 +253,7 @@ function variantForSeason(seasonNumber: number) {
   white-space: nowrap;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .ep {
     grid-template-columns: auto 1fr;
     grid-template-areas:
