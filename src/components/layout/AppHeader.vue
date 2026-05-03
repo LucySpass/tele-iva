@@ -59,7 +59,6 @@ const navItems: NavItem[] = router.options.routes.flatMap((route) => {
   gap: var(--space-4);
   padding: var(--space-4) var(--space-6);
   border-bottom: var(--border-width) solid var(--color-border);
-  background: var(--color-bg);
 }
 
 .brand-link {

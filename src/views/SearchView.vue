@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import BackLink from '../components/common/BackLink.vue'
 import SearchField from '../components/common/SearchField.vue'
 import ShowCard from '../components/common/ShowCard.vue'
+import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import { useSearch } from '../composables/useSearch'
 import { useShows } from '../composables/useShows'
@@ -49,22 +50,28 @@ const resultCountLabel = computed(() => {
         {{ resultCountLabel }}
       </p>
 
-      <div v-if="isPending && hasQuery" class="state" role="status">
-        Cueing up tonight's listings…
-      </div>
+      <StateMessage
+        v-if="isPending && hasQuery"
+        headline="Cueing up tonight's listings…"
+      />
 
-      <div v-else-if="isError" class="state" role="alert">
-        <p class="state-headline">We couldn't reach the listings desk.</p>
-        <button type="button" class="state-action" @click="refetch()">Try again</button>
-      </div>
+      <StateMessage
+        v-else-if="isError"
+        role="alert"
+        headline="We couldn't reach the listings desk."
+        retry-label="Try again"
+        @retry="refetch()"
+      />
 
-      <p v-else-if="!hasQuery" class="state subtle">
-        Start typing — your results will appear here.
-      </p>
+      <StateMessage
+        v-else-if="!hasQuery"
+        headline="Start typing — your results will appear here."
+      />
 
-      <p v-else-if="results.length === 0" class="state subtle">
-        Nothing matches that title. Try a different spelling?
-      </p>
+      <StateMessage
+        v-else-if="results.length === 0"
+        headline="Nothing matches that title. Try a different spelling?"
+      />
 
       <ul v-else class="results" role="list" :aria-label="`Search results for ${trimmedQuery}`">
         <li v-for="show in results" :key="show.id" class="result-item">
@@ -109,46 +116,12 @@ const resultCountLabel = computed(() => {
   margin: 0;
 }
 
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  text-align: center;
-  padding-block: var(--space-12);
-  margin: 0;
-}
-
-.state.subtle {
-  color: var(--color-text-muted);
-}
-
-.state-headline {
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-4);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
 .results {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--space-6);
   margin: 0;
   padding: 0;
-}
-
-.result-item {
-  list-style: none;
 }
 
 @media (min-width: 768px) {

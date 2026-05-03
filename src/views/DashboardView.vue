@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SearchField from '../components/common/SearchField.vue'
+import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import GenreSection from '../components/layout/GenreSection.vue'
 import { useGenres } from '../composables/useGenres'
@@ -21,18 +22,23 @@ const genres = useGenres(data, { limitPerGenre: 12 })
       <SearchField variant="hero" placeholder="Search by title…" label="Find a show" />
     </section>
 
-    <p v-if="isPending" class="state" role="status">
-      Cueing up tonight's listings…
-    </p>
+    <StateMessage
+      v-if="isPending"
+      headline="Cueing up tonight's listings…"
+    />
 
-    <div v-else-if="isError" class="state" role="alert">
-      <p class="state-headline">We couldn't reach the listings desk.</p>
-      <button type="button" class="state-action" @click="refetch()">Try again</button>
-    </div>
+    <StateMessage
+      v-else-if="isError"
+      role="alert"
+      headline="We couldn't reach the listings desk."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
-    <p v-else-if="genres.length === 0" class="state">
-      Looks like a quiet night on TV.
-    </p>
+    <StateMessage
+      v-else-if="genres.length === 0"
+      headline="Looks like a quiet night on TV."
+    />
 
     <template v-else>
       <GenreSection
@@ -64,33 +70,6 @@ const genres = useGenres(data, { limitPerGenre: 12 })
   color: var(--color-text-muted);
   max-width: 48ch;
   margin: 0 0 var(--space-3);
-}
-
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-text-muted);
-  text-align: center;
-  padding-block: var(--space-12);
-  margin: 0;
-}
-
-.state-headline {
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-4);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
 }
 
 @media (max-width: 640px) {

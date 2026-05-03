@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NCollapse, NCollapseItem } from 'naive-ui'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
+import StateMessage from '../common/StateMessage.vue'
 import { useEpisodes } from '../../composables/useEpisodes'
 import type { Episode } from '../../types/show'
 
@@ -12,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { data: episodes, isPending, isError, refetch } = useEpisodes(
+const { data: episodes, isPending, isFetching, isError, refetch } = useEpisodes(
   () => props.showId,
   () => props.enabled,
 )
@@ -38,20 +39,8 @@ const seasons = computed<Season[]>(() => {
     }))
 })
 
-// All collapsed by default. Single-season shows are an exception — there's
-// no volume problem to solve, and forcing one click to see anything feels
-// worse than just showing it.
+// All collapsed by default — users click to expand the season they want.
 const expandedSeasons = ref<number[]>([])
-
-watch(
-  seasons,
-  (next) => {
-    if (next.length === 1 && next[0]) {
-      expandedSeasons.value = [next[0].number]
-    }
-  },
-  { immediate: true },
-)
 
 function formatNumber(n: number | null) {
   if (n === null) return '—'
@@ -81,16 +70,26 @@ function variantFor(seasonNumber: number) {
 
 <template>
   <div class="episodes">
-    <p v-if="isPending" class="state" role="status">Pulling up the broadcast log…</p>
+    <StateMessage
+      v-if="isPending || isFetching"
+      size="compact"
+      headline="Pulling up the broadcast log…"
+    />
 
-    <div v-else-if="isError" class="state" role="alert">
-      <p>The episode listing went off-air.</p>
-      <button type="button" class="state-action" @click="refetch()">Try again</button>
-    </div>
+    <StateMessage
+      v-else-if="isError"
+      size="compact"
+      role="alert"
+      headline="The episode listing went off-air."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
-    <p v-else-if="seasons.length === 0" class="state subtle">
-      No episodes scheduled.
-    </p>
+    <StateMessage
+      v-else-if="seasons.length === 0"
+      size="compact"
+      headline="No episodes scheduled."
+    />
 
     <NCollapse
       v-else
@@ -133,32 +132,6 @@ function variantFor(seasonNumber: number) {
 <style scoped>
 .episodes {
   padding-block: var(--space-4);
-}
-
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-lg);
-  text-align: center;
-  padding-block: var(--space-8);
-  margin: 0;
-}
-
-.state.subtle {
-  color: var(--color-text-muted);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  margin-top: var(--space-3);
-  cursor: pointer;
 }
 
 .seasons {

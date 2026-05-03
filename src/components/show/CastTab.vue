@@ -4,6 +4,7 @@ import { computed, onScopeDispose, ref, useId, useTemplateRef, watch } from 'vue
 import { RouterLink } from 'vue-router'
 
 import CoverImage from '../common/CoverImage.vue'
+import StateMessage from '../common/StateMessage.vue'
 import { useCast } from '../../composables/useCast'
 
 interface Props {
@@ -81,16 +82,26 @@ const hasOverflow = computed(
 
 <template>
   <div class="cast">
-    <p v-if="isPending" class="state" role="status">Tracking down the cast list…</p>
+    <StateMessage
+      v-if="isPending"
+      size="compact"
+      headline="Tracking down the cast list…"
+    />
 
-    <div v-else-if="isError" class="state" role="alert">
-      <p>The cast roll seems to be missing.</p>
-      <button type="button" class="state-action" @click="refetch()">Try again</button>
-    </div>
+    <StateMessage
+      v-else-if="isError"
+      size="compact"
+      role="alert"
+      headline="The cast roll seems to be missing."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
-    <p v-else-if="!cast || cast.length === 0" class="state subtle">
-      No cast credits on file.
-    </p>
+    <StateMessage
+      v-else-if="!cast || cast.length === 0"
+      size="compact"
+      headline="No cast credits on file."
+    />
 
     <template v-else>
       <ul :id="gridId" ref="gridRef" class="grid" role="list">
@@ -142,32 +153,6 @@ const hasOverflow = computed(
 <style scoped>
 .cast {
   padding-block: var(--space-4);
-}
-
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-lg);
-  text-align: center;
-  padding-block: var(--space-8);
-  margin: 0;
-}
-
-.state.subtle {
-  color: var(--color-text-muted);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  margin-top: var(--space-3);
-  cursor: pointer;
 }
 
 .grid {

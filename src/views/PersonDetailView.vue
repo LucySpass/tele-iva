@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import BackLink from '../components/common/BackLink.vue'
 import DetailHero from '../components/common/DetailHero.vue'
 import ShowCard from '../components/common/ShowCard.vue'
+import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import { usePerson, usePersonCredits } from '../composables/usePerson'
 import type { Show } from '../types/show'
@@ -59,12 +60,18 @@ const lifeDates = computed(() => {
 
 <template>
   <AppLayout>
-    <p v-if="isPending" class="state" role="status">Looking up the playbill…</p>
+    <StateMessage
+      v-if="isPending"
+      headline="Looking up the playbill…"
+    />
 
-    <div v-else-if="isError" class="state" role="alert">
-      <p class="state-headline">We couldn't reach the actor's page.</p>
-      <button type="button" class="state-action" @click="refetch()">Try again</button>
-    </div>
+    <StateMessage
+      v-else-if="isError"
+      role="alert"
+      headline="We couldn't reach the actor's page."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
     <article v-else-if="person" class="person-detail">
       <BackLink />
@@ -97,13 +104,17 @@ const lifeDates = computed(() => {
           </p>
         </header>
 
-        <p v-if="creditsLoading && filmography.length === 0" class="state subtle">
-          Pulling the credits sheet…
-        </p>
+        <StateMessage
+          v-if="creditsLoading && filmography.length === 0"
+          size="compact"
+          headline="Pulling the credits sheet…"
+        />
 
-        <p v-else-if="filmography.length === 0" class="state subtle">
-          No filmography on file.
-        </p>
+        <StateMessage
+          v-else-if="filmography.length === 0"
+          size="compact"
+          headline="No filmography on file."
+        />
 
         <ul v-else class="film-grid" role="list">
           <li v-for="show in filmography" :key="show.id" class="film-cell">
@@ -116,40 +127,6 @@ const lifeDates = computed(() => {
 </template>
 
 <style scoped>
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-text-muted);
-  text-align: center;
-  padding-block: var(--space-12);
-  margin: 0;
-}
-
-.state.subtle {
-  font-size: var(--font-size-lg);
-  padding-block: var(--space-6);
-}
-
-.state-headline {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-4);
-  color: var(--color-text);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
 .person-detail {
   display: flex;
   flex-direction: column;

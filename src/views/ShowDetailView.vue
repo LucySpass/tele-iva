@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 
 import BackLink from '../components/common/BackLink.vue'
 import DetailHero from '../components/common/DetailHero.vue'
+import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import CastTab from '../components/show/CastTab.vue'
 import EpisodesTab from '../components/show/EpisodesTab.vue'
@@ -95,13 +96,19 @@ const facts = computed<Fact[]>(() => {
 
 <template>
   <AppLayout>
-    <p v-if="isPending" class="state" role="status">Pulling the show details…</p>
+    <StateMessage
+      v-if="isPending"
+      headline="Pulling the show details…"
+    />
 
-    <div v-else-if="isError" class="state" role="alert">
-      <p class="state-headline">We couldn't reach the show.</p>
-      <p class="state-sub">The page may have changed channels.</p>
-      <button type="button" class="state-action" @click="refetch()">Try again</button>
-    </div>
+    <StateMessage
+      v-else-if="isError"
+      role="alert"
+      headline="We couldn't reach the show."
+      subtitle="The page may have changed channels."
+      retry-label="Try again"
+      @retry="refetch()"
+    />
 
     <article v-else-if="show" class="show-detail">
       <BackLink />
@@ -179,40 +186,6 @@ const facts = computed<Fact[]>(() => {
 </template>
 
 <style scoped>
-.state {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-text-muted);
-  text-align: center;
-  padding-block: var(--space-12);
-  margin: 0;
-}
-
-.state-headline {
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-2);
-  color: var(--color-text);
-}
-
-.state-sub {
-  font-size: var(--font-size-base);
-  margin: 0 0 var(--space-6);
-  color: var(--color-text-muted);
-}
-
-.state-action {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
 .show-detail {
   display: flex;
   flex-direction: column;
