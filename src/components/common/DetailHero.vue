@@ -69,12 +69,8 @@ withDefaults(defineProps<Props>(), {
   position: absolute;
   inset: auto 0 0 0;
   height: 8px;
-  background: var(--frame-color);
+  background: var(--variant-color);
 }
-
-.frame[data-variant='primary'] { --frame-color: var(--color-primary); }
-.frame[data-variant='secondary'] { --frame-color: var(--color-secondary); }
-.frame[data-variant='accent'] { --frame-color: var(--color-accent); }
 
 .masthead {
   display: flex;
@@ -87,11 +83,6 @@ withDefaults(defineProps<Props>(), {
   align-items: center;
   gap: var(--space-2);
   margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
-  color: var(--color-text-muted);
 }
 
 .title {

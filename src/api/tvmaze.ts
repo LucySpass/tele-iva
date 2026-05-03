@@ -46,8 +46,7 @@ export function fetchPerson(personId: number, signal?: AbortSignal): Promise<Per
 }
 
 /**
- * Cast credits with the full Show inlined under `_embedded.show`. One round
- * trip serves the entire filmography — no fan-out per credit.
+ * Cast credits with the full Show inlined under `_embedded.show`.
  */
 export function fetchPersonCredits(
   personId: number,

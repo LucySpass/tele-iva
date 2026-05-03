@@ -182,8 +182,11 @@ src/
       BackLink.vue
       Brand.vue
       CoverImage.vue
-      SearchField.vue         # NInput bound to the search store
+      DetailHero.vue            # Shared hero for show + person detail
+      SearchField.vue           # NInput bound to the search store
       ShowCard.vue
+      ShowGrid.vue              # Responsive grid of ShowCards
+      StateMessage.vue          # Shared loading / error / empty states
       ThemeToggle.vue
     layout/                   # Page chrome
       AppFooter.vue
@@ -223,6 +226,8 @@ src/
     stores/                   # search, theme
   types/
     show.ts                   # TVMaze API response shapes
+  utils/
+    variant.ts                # Deterministic color variant cycling
 ```
 
 Routes are derived for the header nav from `meta.nav` on each route — adding
@@ -295,6 +300,31 @@ To enable deployment for the first time:
 2. Repo → Settings → Pages → Build and deployment → Source: **GitHub Actions**.
 
 Subsequent pushes to `main` deploy automatically.
+
+---
+
+## Future improvements
+
+Given more time, these are the changes I'd prioritize:
+
+- **E2E tests** — Playwright or Cypress covering the critical user journeys
+  (dashboard → show detail → cast member → back, search → result → detail).
+  Unit tests cover logic well; integration coverage would catch routing and
+  rendering regressions.
+- **Component tests for more views** — `ShowCard`, `SearchField`, and
+  `GenreSection` are thin enough to survive without render tests today, but
+  a few targeted Vue Test Utils specs would raise confidence before shipping.
+- **Infinite scroll or virtual list** — the dashboard loads the full show
+  index (~240 shows) and caps each genre at 12. For a larger dataset,
+  `HorizontalShowList` should virtualize off-screen cards.
+- **Internationalization** — all user-facing strings are hardcoded English.
+  Extracting them to a message file (vue-i18n or a plain object) would be
+  the first step toward localization.
+- **Error boundary** — a global `onErrorCaptured` handler or Vue Router's
+  `onError` hook to catch unexpected failures gracefully instead of a blank
+  screen.
+- **Service worker / offline** — Vite's PWA plugin could cache the shell and
+  API responses for offline browsing of previously viewed shows.
 
 ---
 

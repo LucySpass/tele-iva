@@ -6,6 +6,7 @@ import { RouterLink } from 'vue-router'
 import CoverImage from '../common/CoverImage.vue'
 import StateMessage from '../common/StateMessage.vue'
 import { useCast } from '../../composables/useCast'
+import { variantFor } from '../../utils/variant'
 
 interface Props {
   showId: number | string
@@ -18,11 +19,6 @@ const { data: cast, isPending, isError, refetch } = useCast(
   () => props.showId,
   () => props.enabled,
 )
-
-const skeletonVariants = ['primary', 'secondary', 'accent'] as const
-function variantFor(personId: number) {
-  return skeletonVariants[personId % 3]
-}
 
 function tiltFor(index: number) {
   return index % 2 === 0 ? '-1deg' : '1deg'
@@ -199,13 +195,9 @@ const hasOverflow = computed(
   content: '';
   position: absolute;
   inset: auto 0 0 0;
-  height: 6px;
-  background: var(--frame-color);
+  height: 8px;
+  background: var(--variant-color);
 }
-
-.frame[data-variant='primary'] { --frame-color: var(--color-primary); }
-.frame[data-variant='secondary'] { --frame-color: var(--color-secondary); }
-.frame[data-variant='accent'] { --frame-color: var(--color-accent); }
 
 .info {
   display: flex;
@@ -215,11 +207,6 @@ const hasOverflow = computed(
 
 .eyebrow {
   margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
-  color: var(--color-text-muted);
 }
 
 .character {

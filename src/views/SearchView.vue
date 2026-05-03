@@ -2,8 +2,9 @@
 import { computed } from 'vue'
 
 import BackLink from '../components/common/BackLink.vue'
+import PageHero from '../components/common/PageHero.vue'
 import SearchField from '../components/common/SearchField.vue'
-import ShowCard from '../components/common/ShowCard.vue'
+import ShowGrid from '../components/common/ShowGrid.vue'
 import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import { useSearch } from '../composables/useSearch'
@@ -36,15 +37,14 @@ const resultCountLabel = computed(() => {
     <section class="search" aria-labelledby="search-heading">
       <BackLink @click="store.clear()" />
 
-      <header class="search-head">
-        <p class="eyebrow">Find a show</p>
-        <h1 id="search-heading" class="search-title">Search the listings</h1>
-        <p class="search-sub">
-          Type a title — partial spellings are forgiven.
-        </p>
-      </header>
-
-      <SearchField variant="hero" :autofocus="true" placeholder="What are we hunting for?" label="Search by title" />
+      <PageHero
+        eyebrow="Find a show"
+        title="Search the listings"
+        subtitle="Type a title — partial spellings are forgiven."
+        heading-id="search-heading"
+      >
+        <SearchField variant="hero" :autofocus="true" />
+      </PageHero>
 
       <p v-if="resultCountLabel" class="result-count" role="status" aria-live="polite">
         {{ resultCountLabel }}
@@ -73,11 +73,11 @@ const resultCountLabel = computed(() => {
         headline="Nothing matches that title. Try a different spelling?"
       />
 
-      <ul v-else class="results" role="list" :aria-label="`Search results for ${trimmedQuery}`">
-        <li v-for="show in results" :key="show.id" class="result-item">
-          <ShowCard :show="show" />
-        </li>
-      </ul>
+      <ShowGrid
+        v-else
+        :shows="results"
+        :aria-label="`Search results for ${trimmedQuery}`"
+      />
     </section>
   </AppLayout>
 </template>
@@ -89,24 +89,6 @@ const resultCountLabel = computed(() => {
   gap: var(--space-6);
 }
 
-.search-head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  max-width: 32rem;
-}
-
-.search-title {
-  font-size: var(--font-size-2xl);
-  margin: 0;
-}
-
-.search-sub {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
 .result-count {
   font-size: var(--font-size-xs);
   font-weight: 600;
@@ -114,19 +96,5 @@ const resultCountLabel = computed(() => {
   letter-spacing: var(--letter-spacing-wider);
   color: var(--color-text-muted);
   margin: 0;
-}
-
-.results {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-6);
-  margin: 0;
-  padding: 0;
-}
-
-@media (min-width: 768px) {
-  .results {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
 }
 </style>

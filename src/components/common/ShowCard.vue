@@ -5,6 +5,7 @@ import { RouterLink } from 'vue-router'
 
 import type { Show } from '../../types/show'
 import CoverImage from './CoverImage.vue'
+import { variantFor } from '../../utils/variant'
 
 interface Props {
   show: Show
@@ -29,8 +30,7 @@ const genreLabel = computed(() =>
   props.show.genres.length ? `Genres: ${props.show.genres.join(', ')}` : undefined,
 )
 
-const skeletonVariants = ['primary', 'secondary', 'accent'] as const
-const skeletonVariant = computed(() => skeletonVariants[props.show.id % 3])
+const skeletonVariant = computed(() => variantFor(props.show.id))
 </script>
 
 <template>

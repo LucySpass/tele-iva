@@ -14,7 +14,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'compact',
-  placeholder: 'Search shows…',
+  placeholder: 'Search by title…',
   ariaLabel: 'Search shows by title',
   label: 'Find a show',
   autofocus: false,

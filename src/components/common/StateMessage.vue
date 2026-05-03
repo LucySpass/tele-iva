@@ -26,20 +26,10 @@ defineEmits<{
 </script>
 
 <template>
-  <div
-    class="state-message"
-    :class="{ compact: size === 'compact' }"
-    :role="role"
-  >
+  <div class="state-message" :class="{ compact: size === 'compact' }" :role="role">
     <p class="state-headline">{{ headline }}</p>
     <p v-if="subtitle" class="state-sub">{{ subtitle }}</p>
-    <NButton
-      v-if="retryLabel"
-      type="primary"
-      strong
-      size="small"
-      @click="$emit('retry')"
-    >
+    <NButton v-if="retryLabel" type="primary" strong size="small" @click="$emit('retry')">
       {{ retryLabel }}
     </NButton>
   </div>
@@ -58,7 +48,6 @@ defineEmits<{
 .state-headline {
   font-family: var(--font-display);
   font-size: var(--font-size-xl);
-  color: var(--color-text-muted);
   margin: 0;
 }
 

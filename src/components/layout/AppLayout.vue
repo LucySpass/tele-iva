@@ -10,8 +10,9 @@ useSearchNavigation()
 
 <template>
   <div class="app-layout">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <AppHeader />
-    <main class="app-main">
+    <main id="main-content" class="app-main">
       <slot />
     </main>
     <AppFooter />
@@ -31,5 +32,23 @@ useSearchNavigation()
   max-width: var(--max-width-content);
   margin: 0 auto;
   padding: var(--space-8) var(--space-6);
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-100%);
+  transition: transform var(--duration-fast) var(--easing-standard);
+  z-index: 999;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 </style>

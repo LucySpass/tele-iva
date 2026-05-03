@@ -3,10 +3,11 @@ import { computed } from 'vue'
 
 import BackLink from '../components/common/BackLink.vue'
 import DetailHero from '../components/common/DetailHero.vue'
-import ShowCard from '../components/common/ShowCard.vue'
+import ShowGrid from '../components/common/ShowGrid.vue'
 import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import { usePerson, usePersonCredits } from '../composables/usePerson'
+import { variantFor } from '../utils/variant'
 import type { Show } from '../types/show'
 
 interface Props {
@@ -42,10 +43,9 @@ const filmography = computed<Show[]>(() => {
 
 const creditCount = computed(() => filmography.value.length)
 
-const skeletonVariants = ['primary', 'secondary', 'accent'] as const
 const skeletonVariant = computed(() => {
   const id = person.value?.id ?? Number(props.id) ?? 0
-  return skeletonVariants[id % 3]
+  return variantFor(id)
 })
 
 const lifeDates = computed(() => {
@@ -116,11 +116,7 @@ const lifeDates = computed(() => {
           headline="No filmography on file."
         />
 
-        <ul v-else class="film-grid" role="list">
-          <li v-for="show in filmography" :key="show.id" class="film-cell">
-            <ShowCard :show="show" />
-          </li>
-        </ul>
+        <ShowGrid v-else :shows="filmography" />
       </section>
     </article>
   </AppLayout>
@@ -141,13 +137,8 @@ const lifeDates = computed(() => {
 }
 
 .section-title {
-  font-family: var(--font-display);
+  --section-color: var(--color-accent);
   font-size: var(--font-size-2xl);
-  line-height: var(--line-height-tight);
-  margin: 0;
-  display: inline-block;
-  border-bottom: var(--border-width-bold) solid var(--color-accent);
-  padding-bottom: var(--space-1);
   align-self: flex-start;
 }
 
@@ -158,23 +149,5 @@ const lifeDates = computed(() => {
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wider);
   color: var(--color-text-muted);
-}
-
-.film-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-6);
-  margin: 0;
-  padding: 0;
-}
-
-.film-cell {
-  list-style: none;
-}
-
-@media (min-width: 768px) {
-  .film-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
 }
 </style>

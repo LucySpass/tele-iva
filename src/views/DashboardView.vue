@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PageHero from '../components/common/PageHero.vue'
 import SearchField from '../components/common/SearchField.vue'
 import StateMessage from '../components/common/StateMessage.vue'
 import AppLayout from '../components/layout/AppLayout.vue'
@@ -12,15 +13,16 @@ const genres = useGenres(data, { limitPerGenre: 12 })
 
 <template>
   <AppLayout>
-    <section class="hero" aria-labelledby="hero-heading">
-      <p class="eyebrow">Tonight on the dial</p>
-      <h1 id="hero-heading" class="hero-title">What are you in the mood for?</h1>
-      <p class="hero-sub">
-        Browse the listings by genre below — or start typing a title and we'll
-        take you to the search desk.
-      </p>
-      <SearchField variant="hero" placeholder="Search by title…" label="Find a show" />
-    </section>
+    <PageHero
+      eyebrow="Tonight on the dial"
+      title="What are you in the mood for?"
+      subtitle="Browse the listings by genre below — or start typing a title and we'll take you to the search desk."
+      heading-id="hero-heading"
+      size="large"
+      class="hero"
+    >
+      <SearchField variant="hero" :autofocus="true" />
+    </PageHero>
 
     <StateMessage
       v-if="isPending"
@@ -54,27 +56,6 @@ const genres = useGenres(data, { limitPerGenre: 12 })
 
 <style scoped>
 .hero {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
   margin-bottom: var(--space-8);
-}
-
-.hero-title {
-  font-size: var(--font-size-3xl);
-  margin: 0;
-}
-
-.hero-sub {
-  font-size: var(--font-size-base);
-  color: var(--color-text-muted);
-  max-width: 48ch;
-  margin: 0 0 var(--space-3);
-}
-
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: var(--font-size-2xl);
-  }
 }
 </style>

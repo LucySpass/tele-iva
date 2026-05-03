@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { NTable, NTabPane, NTabs, NTag } from 'naive-ui'
+import { NTable, NTag } from 'naive-ui'
 import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import BackLink from '../components/common/BackLink.vue'
 import DetailHero from '../components/common/DetailHero.vue'
@@ -9,6 +10,7 @@ import AppLayout from '../components/layout/AppLayout.vue'
 import CastTab from '../components/show/CastTab.vue'
 import EpisodesTab from '../components/show/EpisodesTab.vue'
 import { useShow } from '../composables/useShow'
+import { variantFor } from '../utils/variant'
 
 interface Props {
   id: string
@@ -49,10 +51,9 @@ const genreLabel = computed(() => {
   return genres.length ? `Genres: ${genres.join(', ')}` : undefined
 })
 
-const skeletonVariants = ['primary', 'secondary', 'accent'] as const
 const skeletonVariant = computed(() => {
   const id = show.value?.id ?? Number(props.id) ?? 0
-  return skeletonVariants[id % 3]
+  return variantFor(id)
 })
 
 interface Fact {
@@ -61,24 +62,41 @@ interface Fact {
   href?: string
 }
 
+const route = useRoute()
+const router = useRouter()
+
+const VALID_TABS = ['cast', 'episodes'] as const
+type Tab = (typeof VALID_TABS)[number]
+
+const TAB_LABELS: Record<Tab, string> = {
+  cast: 'Cast',
+  episodes: 'Episodes',
+}
+
+function parseTab(value: unknown): Tab {
+  return typeof value === 'string' && VALID_TABS.includes(value as Tab)
+    ? (value as Tab)
+    : 'cast'
+}
+
 // Tab activation drives lazy fetching: the composables only run their
 // queries when their `enabled` flag flips true. Once a tab has been opened
 // it stays "ever-activated" so re-clicking doesn't trigger a refetch dance.
-const activeTab = ref<'cast' | 'episodes'>('cast')
-const castEverActive = ref(true) // cast is the default tab on landing
-const episodesEverActive = ref(false)
+const activeTab = ref<Tab>(parseTab(route.query.tab))
+const castEverActive = ref(activeTab.value === 'cast')
+const episodesEverActive = ref(activeTab.value === 'episodes')
+
+// Ensure ?tab= is always present in the URL on first load
+if (!route.query.tab) {
+  router.replace({ query: { ...route.query, tab: activeTab.value } })
+}
 
 watch(activeTab, (next) => {
   if (next === 'cast') castEverActive.value = true
   if (next === 'episodes') episodesEverActive.value = true
+  // Reflect tab in URL without creating a history entry per click
+  router.replace({ query: { ...route.query, tab: next } })
 })
-
-// Color block under the active tab rotates per tab — Cast wears teal,
-// Episodes wears gold. Drives the `--tab-bar-color` variable consumed by
-// scoped CSS below.
-const tabBarColor = computed(() =>
-  activeTab.value === 'episodes' ? 'var(--color-secondary)' : 'var(--color-primary)',
-)
 
 const facts = computed<Fact[]>(() => {
   const list: Fact[] = []
@@ -96,30 +114,16 @@ const facts = computed<Fact[]>(() => {
 
 <template>
   <AppLayout>
-    <StateMessage
-      v-if="isPending"
-      headline="Pulling the show details…"
-    />
+    <StateMessage v-if="isPending" headline="Pulling the show details…" />
 
-    <StateMessage
-      v-else-if="isError"
-      role="alert"
-      headline="We couldn't reach the show."
-      subtitle="The page may have changed channels."
-      retry-label="Try again"
-      @retry="refetch()"
-    />
+    <StateMessage v-else-if="isError" role="alert" headline="We couldn't reach the show."
+      subtitle="The page may have changed channels." retry-label="Try again" @retry="refetch()" />
 
     <article v-else-if="show" class="show-detail">
       <BackLink />
 
-      <DetailHero
-        :image-src="show.image?.original ?? null"
-        :image-alt="`${show.name} cover art`"
-        :variant="skeletonVariant"
-        :title="show.name"
-        :tags-label="genreLabel"
-      >
+      <DetailHero :image-src="show.image?.original ?? null" :image-alt="`${show.name} cover art`"
+        :variant="skeletonVariant" :title="show.name" :tags-label="genreLabel">
         <template #eyebrow>
           <span>{{ show.type }}</span>
           <span v-if="show.language" aria-hidden="true">·</span>
@@ -150,21 +154,21 @@ const facts = computed<Fact[]>(() => {
       </section>
 
       <section class="tabs-section" aria-label="Cast and episodes">
-        <NTabs
-          v-model:value="activeTab"
-          type="line"
-          size="large"
-          animated
-          class="show-tabs"
-          :style="{ '--tab-bar-color': tabBarColor }"
-        >
-          <NTabPane name="cast" tab="Cast">
-            <CastTab :show-id="show.id" :enabled="castEverActive" />
-          </NTabPane>
-          <NTabPane name="episodes" tab="Episodes">
-            <EpisodesTab :show-id="show.id" :enabled="episodesEverActive" />
-          </NTabPane>
-        </NTabs>
+        <div role="tablist" :class="['tab-list', `tab-list--${activeTab}`]">
+          <button
+            v-for="tab in VALID_TABS"
+            :key="tab"
+            role="tab"
+            :aria-selected="activeTab === tab"
+            :class="['tab-trigger', { active: activeTab === tab }]"
+            @click="activeTab = tab"
+          >
+            {{ TAB_LABELS[tab] }}
+          </button>
+        </div>
+
+        <CastTab v-if="activeTab === 'cast'" role="tabpanel" :show-id="show.id" :enabled="castEverActive" />
+        <EpisodesTab v-else role="tabpanel" :show-id="show.id" :enabled="episodesEverActive" />
       </section>
 
       <section v-if="facts.length" class="facts" aria-labelledby="facts-heading">
@@ -192,14 +196,6 @@ const facts = computed<Fact[]>(() => {
   gap: var(--space-6);
 }
 
-.section-title {
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-4);
-  display: inline-block;
-  border-bottom: var(--border-width-bold) solid var(--color-primary);
-  padding-bottom: var(--space-1);
-}
-
 .max-width {
   max-width: calc(var(--max-width-content) / 2);
 }
@@ -222,25 +218,42 @@ const facts = computed<Fact[]>(() => {
   margin-block: var(--space-4);
 }
 
-/* Naive UI tabs, themed magazine-style: editorial display-serif labels,
-   thick color block under the active tab. Color rotates per tab via
-   :nth-child so Cast/Episodes feel like distinct magazine sections. */
-.show-tabs :deep(.n-tabs-tab) {
+.tab-list {
+  display: flex;
+  gap: var(--space-2);
+  border-bottom: var(--border-width) solid var(--color-border);
+  margin-bottom: var(--space-4);
+}
+
+.tab-list--cast {
+  --tab-bar-color: var(--color-primary);
+}
+
+.tab-list--episodes {
+  --tab-bar-color: var(--color-secondary);
+}
+
+.tab-trigger {
   font-family: var(--font-display);
   font-size: var(--font-size-xl);
   font-weight: 400;
   letter-spacing: var(--letter-spacing-tight);
   padding: var(--space-3) var(--space-4);
+  color: var(--color-text-muted);
+  border-bottom: 4px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
 }
 
-.show-tabs :deep(.n-tabs-tab .n-tabs-tab__label) {
-  font-family: var(--font-display);
+.tab-trigger:hover {
+  color: var(--color-text);
 }
 
-.show-tabs :deep(.n-tabs-bar) {
-  height: 4px;
-  background: var(--tab-bar-color, var(--color-primary));
-  transition: background var(--duration-base) var(--easing-standard);
+.tab-trigger.active {
+  color: var(--color-text);
+  border-bottom-color: var(--tab-bar-color, var(--color-primary));
 }
 
 .facts-key {

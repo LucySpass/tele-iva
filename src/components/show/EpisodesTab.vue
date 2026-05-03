@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { NCollapse, NCollapseItem } from 'naive-ui'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import StateMessage from '../common/StateMessage.vue'
 import { useEpisodes } from '../../composables/useEpisodes'
+import { variantFor } from '../../utils/variant'
 import type { Episode } from '../../types/show'
 
 interface Props {
@@ -39,9 +39,6 @@ const seasons = computed<Season[]>(() => {
     }))
 })
 
-// All collapsed by default — users click to expand the season they want.
-const expandedSeasons = ref<number[]>([])
-
 function formatNumber(n: number | null) {
   if (n === null) return '—'
   return String(n).padStart(2, '0')
@@ -62,9 +59,8 @@ function formatDate(airdate: string | null) {
   })
 }
 
-const seasonVariants = ['primary', 'secondary', 'accent'] as const
-function variantFor(seasonNumber: number) {
-  return seasonVariants[(seasonNumber - 1) % 3]
+function variantForSeason(seasonNumber: number) {
+  return variantFor(seasonNumber - 1)
 }
 </script>
 
@@ -91,29 +87,24 @@ function variantFor(seasonNumber: number) {
       headline="No episodes scheduled."
     />
 
-    <NCollapse
-      v-else
-      v-model:expanded-names="expandedSeasons"
-      arrow-placement="right"
-      class="seasons"
-    >
-      <NCollapseItem
+    <div v-else class="seasons">
+      <details
         v-for="season in seasons"
         :key="season.number"
-        :name="season.number"
-        :data-variant="variantFor(season.number)"
+        :data-variant="variantForSeason(season.number)"
         class="season"
       >
-        <template #header>
+        <summary class="season-summary">
           <div class="season-head">
-            <p class="season-eyebrow">Season</p>
+            <p class="season-eyebrow eyebrow">Season</p>
             <p class="season-number">{{ formatSeason(season.number) }}</p>
             <p class="season-count">
               {{ season.episodes.length }}
               {{ season.episodes.length === 1 ? 'episode' : 'episodes' }}
             </p>
           </div>
-        </template>
+          <span class="season-arrow" aria-hidden="true">&#9662;</span>
+        </summary>
 
         <ol class="ep-list" role="list">
           <li v-for="ep in season.episodes" :key="ep.id" class="ep">
@@ -124,8 +115,8 @@ function variantFor(seasonNumber: number) {
             </span>
           </li>
         </ol>
-      </NCollapseItem>
-    </NCollapse>
+      </details>
+    </div>
   </div>
 </template>
 
@@ -140,34 +131,37 @@ function variantFor(seasonNumber: number) {
   gap: var(--space-6);
 }
 
-/* Each season carries its color via a custom property; descendants
-   (header underline, big season number, expand chevron) all read from it. */
-.season[data-variant='primary'] { --season-color: var(--color-primary); }
-.season[data-variant='secondary'] { --season-color: var(--color-secondary); }
-.season[data-variant='accent'] { --season-color: var(--color-accent); }
-
-/* Strip the divider Naive UI puts between sibling collapse items — the
-   per-season colored underline does the work instead. */
-.seasons :deep(.n-collapse-item) {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
+/* Each season reads --variant-color from the global [data-variant] rule
+   and aliases it to --season-color for descendants that need it
+   (header underline, big season number, arrow). */
+.season {
+  --season-color: var(--variant-color);
 }
 
-.seasons :deep(.n-collapse-item__header) {
+.season-summary {
+  display: flex;
+  align-items: end;
+  gap: var(--space-4);
   padding-block: var(--space-2) var(--space-3);
   border-bottom: var(--border-width-bold) solid var(--season-color);
+  cursor: pointer;
+  list-style: none;
 }
 
-.seasons :deep(.n-collapse-item__header-main) {
-  width: 100%;
-}
+/* Hide the default disclosure triangle in all browsers */
+.season-summary::-webkit-details-marker { display: none; }
+.season-summary::marker { content: ''; }
 
-.seasons :deep(.n-collapse-item__arrow) {
+.season-arrow {
   color: var(--season-color);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   align-self: end;
   margin-bottom: var(--space-2);
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+
+.season[open] .season-arrow {
+  transform: rotate(180deg);
 }
 
 .season-head {
@@ -180,11 +174,6 @@ function variantFor(seasonNumber: number) {
 
 .season-eyebrow {
   margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
-  color: var(--color-text-muted);
   align-self: end;
   padding-bottom: var(--space-2);
 }
